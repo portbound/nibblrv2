@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Server.Data;
+using Server.Services.Logging;
 
+Logger logger = Logger.Default;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string? openAiApiKey = builder.Configuration["OpenAIApiKey"];
 
