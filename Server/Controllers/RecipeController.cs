@@ -21,7 +21,7 @@ public class RecipeController(ApplicationDbContext db) : ControllerBase {
     }
     
     [HttpGet("/api/recipes/category/{categoryID}")]
-    public async Task<IResult> GetRecipeByCategoryID(int categoryId) {
-        return await new RecipeService(db).Get(categoryId: categoryId);
+    public async Task<IResult> GetRecipeByCategoryID(int categoryID) {
+        return await new RecipeService(db).Get(categoryId: categoryID);
     }
 }

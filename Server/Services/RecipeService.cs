@@ -19,7 +19,7 @@ public class RecipeService(ApplicationDbContext db) {
     
     [HttpGet]
     public async Task<IResult> Get(int? categoryId = null, int? recipeId = null) { 
-        IQueryable<Recipe> query = db.Recipe.AsQueryable();
+        IQueryable<Recipe> query = db.Recipes.AsQueryable();
 
         List<RecipeDto>? recipes = [];
 
@@ -33,7 +33,10 @@ public class RecipeService(ApplicationDbContext db) {
                 .Select(recipe => new RecipeDto {
                     ID = recipe.ID,
                     Name = recipe.Name,
-                    Description = recipe.Description,
+                    Category = new CategoryDto {
+                        Name = recipe.Category.Name,
+                    },
+                    Description = recipe.Description ?? string.Empty,
                     Ingredients = recipe.Ingredients.Select(ingredient => 
                         new IngredientsDto {
                             Name = ingredient.Name,
@@ -72,7 +75,10 @@ public class RecipeService(ApplicationDbContext db) {
                 .Select(recipe => new RecipeDto {
                     ID = recipe.ID,
                     Name = recipe.Name,
-                    Description = recipe.Description,
+                    Category = new CategoryDto {
+                        Name = recipe.Category.Name,
+                    },
+                    Description = recipe.Description ?? string.Empty,
                     Ingredients = recipe.Ingredients.Select(ingredient => 
                         new IngredientsDto {
                             Name = ingredient.Name,
@@ -108,7 +114,10 @@ public class RecipeService(ApplicationDbContext db) {
             .Select(recipe => new RecipeDto {
                 ID = recipe.ID,
                 Name = recipe.Name,
-                Description = recipe.Description,
+                Category = new CategoryDto {
+                    Name = recipe.Category.Name
+                },
+                Description = recipe.Description ?? string.Empty,
                 Ingredients = recipe.Ingredients.Select(ingredient => 
                     new IngredientsDto {
                         Name = ingredient.Name,
