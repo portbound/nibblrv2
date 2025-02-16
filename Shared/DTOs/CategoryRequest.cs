@@ -1,5 +1,5 @@
 namespace Nibblr.DTOs;
 
-public class CategoryDto {
+public class CategoryRequest {
     public string Name { get; set; }
 }

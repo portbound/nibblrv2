@@ -15,13 +15,13 @@ public class RecipeController(ApplicationDbContext db) : ControllerBase {
         return await new RecipeService(db).Get();
     }
     
-    [HttpGet("/api/recipe/{recipeID}")]
-    public async Task<IResult> GetRecipeByID(int recipeID) {
-        return await new RecipeService(db).Get(recipeId: recipeID);
+    [HttpGet("/api/recipes/{recipeName}")]
+    public async Task<IResult> Get(string recipeName) {
+        return await new RecipeService(db).Get(recipeName: recipeName);
     }
     
-    [HttpGet("/api/recipes/category/{categoryID}")]
-    public async Task<IResult> GetRecipeByCategoryID(int categoryID) {
-        return await new RecipeService(db).Get(categoryId: categoryID);
+    [HttpGet("/api/recipes/categories/{categoryName}")]
+    public async Task<IResult> GetRecipeByCategory(string categoryName) {
+        return await new RecipeService(db).Get(categoryName: categoryName);
     }
 }

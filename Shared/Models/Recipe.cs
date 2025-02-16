@@ -12,5 +12,7 @@ public class Recipe {
     public ICollection<Instructions> Instructions { get; set; }
     public Category Category { get; set; }
     public Macros Macros { get; set; }
+    public DateTime CreationDate { get; set; }
+
 }
 

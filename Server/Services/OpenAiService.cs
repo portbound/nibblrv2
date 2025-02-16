@@ -16,12 +16,12 @@ public class OpenAiService {
     
 
     public async Task<Recipe> ExtractRecipe(string url) {
-        const string systemMessage = "Extract recipe details from HTML content. Use USDA database for nutrition calculations.";
+        const string systemMessage = "Extract recipe details from HTML content. If there are no nutrition facts available in the HTML, use USDA database for nutrition calculations instead.";
         string content = HtmlScraperService.GetRecipe(url);
         return await GetRecipe(systemMessage, content);
     }
     public async Task<Recipe> CreateRecipe(List<string> ingredients) {
-        const string systemMessage = "Create a recipe using these ingredients. Use USDA database for nutrition calculations.";
+        const string systemMessage = "Create a recipe using these ingredients. If there are no nutrition facts available in the HTML, use USDA database for nutrition calculations instead.";
         string content = string.Join(",", ingredients);
         return await GetRecipe(systemMessage, content);
     }

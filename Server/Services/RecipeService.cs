@@ -11,115 +11,19 @@ namespace Server.Services;
 
 public class RecipeService(ApplicationDbContext db) {
     private readonly Logger logger = Logger.Default;
-
-    private readonly JsonSerializerOptions options = new JsonSerializerOptions
-    {
-        ReferenceHandler = ReferenceHandler.Preserve
-    };    
     
     [HttpGet]
-    public async Task<IResult> Get(int? categoryId = null, int? recipeId = null) { 
-        IQueryable<Recipe> query = db.Recipes.AsQueryable();
-
-        List<RecipeDto>? recipes = [];
-
-        if (categoryId != null) {
-            query = query.Where(x => x.Category.ID == categoryId);
-            recipes = await query
-                .Include(recipe => recipe.Category)
-                .Include(x => x.Ingredients)
-                .Include(x => x.Instructions)
-                .Include(x => x.Macros)
-                .Select(recipe => new RecipeDto {
-                    ID = recipe.ID,
-                    Name = recipe.Name,
-                    Category = new CategoryDto {
-                        Name = recipe.Category.Name,
-                    },
-                    Description = recipe.Description ?? string.Empty,
-                    Ingredients = recipe.Ingredients.Select(ingredient => 
-                        new IngredientsDto {
-                            Name = ingredient.Name,
-                            Quantity = ingredient.Quantity,
-                            Weight = ingredient.Weight,
-                            WeightUnit = ingredient.WeightUnit,
-                            Description = ingredient.Description
-                        }
-                    ),
-                    Instructions = recipe.Instructions.Select(instructions => 
-                        new InstructionsDto {
-                            Step = instructions.Step,
-                            Body = instructions.Body,
-                        }
-                    ),
-                    Macros = new MacrosDto {
-                        Calories = recipe.Macros.Calories,
-                        Carbs = recipe.Macros.Carbs,
-                        Fat = recipe.Macros.Fat,
-                        Protein = recipe.Macros.Protein,
-                    }
-                })
-                .ToListAsync();
-
-            if (recipes.Count > 0) {
-                return Results.Ok(recipes);
-            }
-        }
-
-        if (recipeId != null) {
-            query = query.Where(x => x.ID == recipeId);
-            RecipeDto? recipe = await query
-                .Include(x => x.Ingredients)
-                .Include(x => x.Instructions)
-                .Include(x => x.Macros)
-                .Select(recipe => new RecipeDto {
-                    ID = recipe.ID,
-                    Name = recipe.Name,
-                    Category = new CategoryDto {
-                        Name = recipe.Category.Name,
-                    },
-                    Description = recipe.Description ?? string.Empty,
-                    Ingredients = recipe.Ingredients.Select(ingredient => 
-                        new IngredientsDto {
-                            Name = ingredient.Name,
-                            Quantity = ingredient.Quantity,
-                            Weight = ingredient.Weight,
-                            WeightUnit = ingredient.WeightUnit,
-                            Description = ingredient.Description
-                        }
-                    ),
-                    Instructions = recipe.Instructions.Select(instructions => 
-                        new InstructionsDto {
-                            Step = instructions.Step,
-                            Body = instructions.Body,
-                        }
-                    ),
-                    Macros = new MacrosDto {
-                        Calories = recipe.Macros.Calories,
-                        Carbs = recipe.Macros.Carbs,
-                        Fat = recipe.Macros.Fat,
-                        Protein = recipe.Macros.Protein,
-                    }
-                }).FirstOrDefaultAsync();
-
-            if (recipe != null) {
-                return Results.Ok(recipe);
-            }
-        }
-        
-        recipes = await query
-            .Include(x => x.Ingredients)
-            .Include(x => x.Instructions)
-            .Include(x => x.Macros)
-            .Select(recipe => new RecipeDto {
-                ID = recipe.ID,
+    public async Task<IResult> Get(string? categoryName = null, string? recipeName = null) { 
+        IQueryable<RecipeRequest> query = db.Recipes.AsQueryable()
+            .Select(recipe => new RecipeRequest {
                 Name = recipe.Name,
-                Category = new CategoryDto {
-                    Name = recipe.Category.Name
+                Category = new CategoryRequest {
+                    Name = recipe.Category.Name,
                 },
-                Description = recipe.Description ?? string.Empty,
+                Description = recipe.Description,
+                URL = recipe.URL,
                 Ingredients = recipe.Ingredients.Select(ingredient => 
-                    new IngredientsDto {
+                    new IngredientsRequest {
                         Name = ingredient.Name,
                         Quantity = ingredient.Quantity,
                         Weight = ingredient.Weight,
@@ -128,24 +32,48 @@ public class RecipeService(ApplicationDbContext db) {
                     }
                 ),
                 Instructions = recipe.Instructions.Select(instructions => 
-                    new InstructionsDto {
+                    new InstructionsRequest {
                         Step = instructions.Step,
                         Body = instructions.Body,
                     }
                 ),
-                Macros = new MacrosDto {
-                        Calories = recipe.Macros.Calories,
-                        Carbs = recipe.Macros.Carbs,
-                        Fat = recipe.Macros.Fat,
-                        Protein = recipe.Macros.Protein,
-                    }
-            })
-            .ToListAsync();
+                Macros = new MacrosRequest {
+                    Calories = recipe.Macros.Calories,
+                    Carbs = recipe.Macros.Carbs,
+                    Fat = recipe.Macros.Fat,
+                    Protein = recipe.Macros.Protein,
+                }
+            });
         
-        if (recipes.Count <= 0) {
-            return Results.NotFound();
+        List<RecipeRequest>? recipes;
+
+        if (!string.IsNullOrEmpty(categoryName)) {
+            query = query.Where(x => x.Category.Name.Contains(categoryName));
+            recipes = await query.ToListAsync();
+
+            return recipes.Count > 0 
+                ? Results.Ok(recipes) 
+                : Results.NotFound();
+        }
+
+        if (recipeName != null) {
+            query = query.Where(x => x.Name.ToLower().Contains(recipeName.ToLower())); // ordinalignorecase not working here -- throwing 500 error we should look into since it's a better comparison but this does work with "ToLower()"
+           
+            recipes = await query.ToListAsync();
+
+            if (recipes.Count <= 0) {
+                return Results.NotFound();
+            }
+            
+            return recipes.Count > 1 
+                ? Results.Ok(recipes)
+                : Results.Ok(recipes[0]); // returning the first item instead of the whole list structure since we'd need to massage this on the frontend anyway 
         }
         
-        return Results.Ok(recipes);
+        recipes = await query.ToListAsync();
+        
+        return recipes.Count > 0
+            ? Results.Ok(recipes)
+            : Results.NotFound();
     }
 }
