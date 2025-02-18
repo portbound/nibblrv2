@@ -1,6 +1,6 @@
 namespace Nibblr.DTOs;
 
-public class MacrosDto {
+public class MacrosRequest {
     public int Calories { get; set; }
     public double Fat { get; set; }
     public double Carbs { get; set; }

@@ -7,7 +7,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Instructions> Instructions => Set<Instructions>();
     public DbSet<Ingredients> Ingredients => Set<Ingredients>();
     public DbSet<Macros> Macros => Set<Macros>();
-    public DbSet<Recipe> Recipe => Set<Recipe>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Recipe> Recipes => Set<Recipe>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Recipe>(entity =>

@@ -1,6 +1,6 @@
 namespace Nibblr.DTOs;
 
-public class IngredientsDto {
+public class IngredientsRequest {
     public string Name { get; set; }
     public double? Quantity { get; set; }
     public double? Weight { get; set; }
