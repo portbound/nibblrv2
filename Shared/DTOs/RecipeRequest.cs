@@ -1,6 +1,7 @@
 namespace Nibblr.DTOs;
 
 public class RecipeRequest {
+    public int ID { get; set; }
     public string Name { get; set; }
     public CategoryRequest Category { get; set; }
     public string? Description { get; set; }
