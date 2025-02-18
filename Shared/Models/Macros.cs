@@ -1,4 +1,4 @@
-namespace Nibblr;
+namespace Shared.Models;
 
 public class Macros {
     public int ID { get; set; }

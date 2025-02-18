@@ -1,27 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using Newtonsoft.Json;
-using Nibblr;
-using Server.Data;
-using Server.Services;
+using Server.Services.Interfaces;
+using Shared.DTOs;
+using Shared.Models;
 
 namespace Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RecipeController(ApplicationDbContext db) : ControllerBase {
+public class RecipeController(IRecipeService _recipeService) : ControllerBase {
+
     [HttpGet("/api/recipes")]
-    public async Task<IResult> GetAllRecipes() {
-        return await new RecipeService(db).Get();
+    public async Task<IEnumerable<RecipeDTO>> GetAllRecipes() {
+        return await _recipeService.GetAllRecipes();
+    }
+    [HttpGet("/api/recipes/categories/{category}")]
+    public async Task<IEnumerable<RecipeDTO>> GetRecipesByCategory(string category) {
+        return await _recipeService.GetRecipesByCategory(category);
     }
     
-    [HttpGet("/api/recipe/{recipeID}")]
-    public async Task<IResult> GetRecipeByID(int recipeID) {
-        return await new RecipeService(db).Get(recipeId: recipeID);
+    [HttpGet("/api/recipes/{id:int}")]
+    public async Task<RecipeDTO> GetRecipeById(int id) {
+        return await _recipeService.GetRecipeById(id);
     }
-    
-    [HttpGet("/api/recipes/category/{categoryID}")]
-    public async Task<IResult> GetRecipeByCategoryID(int categoryId) {
-        return await new RecipeService(db).Get(categoryId: categoryId);
+
+    [HttpPut("/api/recipes/{id:int}")]
+    public async Task<IResult> UpdateRecipe(int id, RecipeDTO recipeDto) {
+        await _recipeService.UpdateRecipe(id, recipeDto);
+        return Results.Ok();
+    }
+
+    [HttpPost("/api/recipes/")]
+    public async Task<IResult> AddRecipe(RecipeDTO recipeDto) {
+        await _recipeService.AddRecipe(recipeDto);
+        return Results.Ok();
+    }
+
+    [HttpDelete("/api/recipes/{id:int}")]
+    public async Task<IResult> DeleteRecipe(int id) {
+        await _recipeService.RemoveRecipe(id);
+        return Results.Ok();
     }
 }

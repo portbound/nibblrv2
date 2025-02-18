@@ -1,4 +1,4 @@
-namespace Nibblr;
+namespace Shared.Models;
 
 public class Category {
     public int ID { get; set; }

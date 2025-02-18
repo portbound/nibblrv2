@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Nibblr;
+namespace Shared.Models;
 
 public class Recipe {
     public int ID { get; set; }
@@ -12,5 +9,7 @@ public class Recipe {
     public ICollection<Instructions> Instructions { get; set; }
     public Category Category { get; set; }
     public Macros Macros { get; set; }
+    public DateTime CreationDate { get; set; }
+
 }
 

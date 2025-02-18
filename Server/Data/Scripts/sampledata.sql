@@ -1,10 +1,18 @@
 -- Inserting sample recipes into Recipe table
-INSERT INTO "Recipe" (Name, Description, URL) VALUES 
+INSERT INTO "Recipes" (Name, Description, URL) VALUES
 ('Spaghetti Bolognese', 'A classic Italian pasta dish with rich meat sauce.', 'https://www.example.com/spaghetti-bolognese'),
 ('Chicken Salad', 'A healthy salad with grilled chicken, lettuce, and vegetables.', 'https://www.example.com/chicken-salad'),
 ('Pancakes', 'Fluffy pancakes served with syrup and butter.', 'https://www.example.com/pancakes'),
 ('Grilled Cheese Sandwich', 'A simple and delicious grilled cheese sandwich.', 'https://www.example.com/grilled-cheese'),
 ('Vegetable Stir Fry', 'A mix of stir-fried vegetables with soy sauce and spices.', 'https://www.example.com/vegetable-stir-fry');
+
+-- Inserting categories for recipes (RecipeId -> Category)
+INSERT INTO "Categories" (Name, RecipeId) VALUES
+('Italian', 1),
+('Salad', 2),
+('Breakfast', 3),
+('Sandwich', 4),
+('Vegetarian', 5);
 
 -- Inserting ingredients for Spaghetti Bolognese (Recipe ID = 1)
 INSERT INTO "Ingredients" (Name, Quantity, Weight, WeightUnit, Description, RecipeId) VALUES
@@ -23,8 +31,8 @@ INSERT INTO "Instructions" (Step, Body, RecipeId) VALUES
 (5, 'Serve the sauce over cooked spaghetti.', 1);
 
 -- Inserting macros for Spaghetti Bolognese (Recipe ID = 1)
-INSERT INTO "Macros" (Fat, Carbs, Protein, RecipeId) VALUES
-(15, 50, 30, 1);
+INSERT INTO "Macros" (Calories, Fat, Carbs, Protein, RecipeId) VALUES
+(550, 15, 50, 30, 1);
 
 -- Inserting ingredients for Chicken Salad (Recipe ID = 2)
 INSERT INTO "Ingredients" (Name, Quantity, Weight, WeightUnit, Description, RecipeId) VALUES
@@ -42,8 +50,8 @@ INSERT INTO "Instructions" (Step, Body, RecipeId) VALUES
 (4, 'Serve immediately.', 2);
 
 -- Inserting macros for Chicken Salad (Recipe ID = 2)
-INSERT INTO "Macros" (Fat, Carbs, Protein, RecipeId) VALUES
-(10, 8, 40, 2);
+INSERT INTO "Macros" (Calories, Fat, Carbs, Protein, RecipeId) VALUES
+(350, 10, 8, 40, 2);
 
 -- Inserting ingredients for Pancakes (Recipe ID = 3)
 INSERT INTO "Ingredients" (Name, Quantity, Weight, WeightUnit, Description, RecipeId) VALUES
@@ -60,8 +68,8 @@ INSERT INTO "Instructions" (Step, Body, RecipeId) VALUES
 (3, 'Serve with syrup and butter.', 3);
 
 -- Inserting macros for Pancakes (Recipe ID = 3)
-INSERT INTO "Macros" (Fat, Carbs, Protein, RecipeId) VALUES
-(15, 60, 8, 3);
+INSERT INTO "Macros" (Calories, Fat, Carbs, Protein, RecipeId) VALUES
+(300, 15, 60, 8, 3);
 
 -- Inserting ingredients for Grilled Cheese Sandwich (Recipe ID = 4)
 INSERT INTO "Ingredients" (Name, Quantity, Weight, WeightUnit, Description, RecipeId) VALUES
@@ -77,8 +85,8 @@ INSERT INTO "Instructions" (Step, Body, RecipeId) VALUES
 (4, 'Serve hot.', 4);
 
 -- Inserting macros for Grilled Cheese Sandwich (Recipe ID = 4)
-INSERT INTO "Macros" (Fat, Carbs, Protein, RecipeId) VALUES
-(20, 30, 15, 4);
+INSERT INTO "Macros" (Calories, Fat, Carbs, Protein, RecipeId) VALUES
+(400, 20, 30, 15, 4);
 
 -- Inserting ingredients for Vegetable Stir Fry (Recipe ID = 5)
 INSERT INTO "Ingredients" (Name, Quantity, Weight, WeightUnit, Description, RecipeId) VALUES
@@ -95,5 +103,5 @@ INSERT INTO "Instructions" (Step, Body, RecipeId) VALUES
 (3, 'Serve immediately.', 5);
 
 -- Inserting macros for Vegetable Stir Fry (Recipe ID = 5)
-INSERT INTO "Macros" (Fat, Carbs, Protein, RecipeId) VALUES
-(10, 15, 3, 5);
+INSERT INTO "Macros" (Calories, Fat, Carbs, Protein, RecipeId) VALUES
+(200, 10, 15, 3, 5);
