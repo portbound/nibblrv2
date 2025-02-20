@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Server.Data;
+using Server.Infrastructure.Data;
 
 #nullable disable
 
 namespace Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250219021110_set unique indexes on recipe name and url")]
-    partial class setuniqueindexesonrecipenameandurl
+    [Migration("20250218030628_updated models")]
+    partial class updatedmodels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -145,12 +145,6 @@ namespace Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex("URL")
-                        .IsUnique();
 
                     b.ToTable("Recipes");
                 });

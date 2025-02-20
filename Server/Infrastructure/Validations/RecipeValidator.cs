@@ -1,8 +1,7 @@
 using FluentValidation;
 using Shared.DTOs;
-using Shared.Models;
 
-namespace Server.Infrastructure;
+namespace Server.Infrastructure.Validations;
 
 public class RecipeValidator : AbstractValidator<RecipeDTO> {
     public RecipeValidator() {

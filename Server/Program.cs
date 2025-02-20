@@ -1,8 +1,9 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using Server.Data;
 using Server.Exceptions;
+using Server.Infrastructure.Data;
+using Server.Infrastructure.Mappings;
 using Server.Repositories;
 using Server.Repositories.Interfaces;
 using Server.Services;

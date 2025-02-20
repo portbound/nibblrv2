@@ -1,6 +1,6 @@
 using HtmlAgilityPack;
 
-namespace Server.Services;
+namespace Server.Services.Ai;
 
 public static class HtmlScraperService {
     public static string? URL { get; set; }

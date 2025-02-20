@@ -1,8 +1,9 @@
 using AutoMapper;
 using FluentValidation;
 using FluentValidation.Results;
-using Server.Exceptions.Exceptions;
+using Server.Exceptions.Types;
 using Server.Infrastructure;
+using Server.Infrastructure.Validations;
 using Server.Repositories;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;

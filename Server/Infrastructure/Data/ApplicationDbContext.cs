@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
-namespace Server.Data;
+namespace Server.Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options) {
     public DbSet<Instructions> Instructions => Set<Instructions>();

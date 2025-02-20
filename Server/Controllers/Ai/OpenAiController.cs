@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Server.Services;
+using Server.Services.Ai;
 using Server.Services.Interfaces;
 using Shared.DTOs;
 
-namespace Server.Controllers;
+namespace Server.Controllers.Ai;
 
 [ApiController]
 [Route("[controller]")]

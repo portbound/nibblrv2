@@ -1,7 +1,7 @@
 using OpenAI.Chat;
 using Shared.DTOs;
 
-namespace Server.Services;
+namespace Server.Services.Ai;
 
 public class OpenAiService {
     private readonly ChatClient _client;
