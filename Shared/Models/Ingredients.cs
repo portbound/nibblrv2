@@ -1,4 +1,4 @@
-namespace Nibblr;
+namespace Shared.Models;
 
 public class Ingredients {
     public int ID { get; set; }

@@ -1,51 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
-using Nibblr;
 using Server.Services;
+using Server.Services.Interfaces;
+using Shared.DTOs;
 
 namespace Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class OpenAiController(IConfiguration config) : ControllerBase {
+public class OpenAiController(IRecipeService _recipeService) : ControllerBase {
 
-    [HttpGet("ExtractRecipe")]
+    [HttpGet("/api/AI/extract/")]
     public async Task<IResult> ExtractRecipe(string url) {
-        // logging
-        Recipe recipe = await new OpenAiService(config).ExtractRecipe(url);
-        return Results.Ok(recipe);
+        RecipeDTO recipeDto = await new OpenAiService().ExtractRecipe(url);
+        return Results.Ok(recipeDto);
     }
     
-    [HttpGet("CreateRecipe")]
-    public async Task<IResult> CreateRecipe(List<string> ingredients) {
-        // logging
-        Recipe recipe = await new OpenAiService(config).CreateRecipe(ingredients);
-        return Results.Ok(recipe);
-    }
-
-    [HttpGet("GetRecipes")]
-    public async Task<IResult> GetRecipes() {
-        // logic to get all recipes 
-        return Results.Ok();
-    }
-
-    [HttpPut("UpdateRecipe")]
-    public async Task<IResult> UpdateRecipe(int id, Recipe recipe) {
-        // logic to lookup recipe and overwrite 
-        // logging
-        return Results.Ok();
-    }
-    
-    [HttpPost("SaveRecipe")]
-    public async Task<IResult> SaveRecipe(Recipe recipe) {
-        // logic to save to db
-        // logging
-        return Results.Created();
-    }
-
-    [HttpDelete("DeleteRecipe")]
-    public async Task<IResult> DeleteRecipe(int id) {
-        // logic to remove from db 
-        // logging
-        return Results.Ok();
+    [HttpGet("/api/AI/create")]
+    public async Task<IResult> CreateRecipe(string ingredients) {
+        RecipeDTO recipeDto = await new OpenAiService().CreateRecipe(ingredients);
+        return Results.Ok(recipeDto);
     }
 }

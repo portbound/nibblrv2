@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Nibblr;
+using Shared.Models;
 
 namespace Server.Data;
 
@@ -16,9 +16,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasKey(e => e.ID);
             entity.Property(e => e.ID).ValueGeneratedOnAdd();
             
-            entity.Property(e => e.Name);
+            entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Description);
-            entity.Property(e => e.URL);
+            entity.HasIndex(e => e.URL).IsUnique();
             
             entity.HasOne(e => e.Macros)
                 .WithOne(e => e.Recipe)

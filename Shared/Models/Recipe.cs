@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Nibblr;
+namespace Shared.Models;
 
 public class Recipe {
     public int ID { get; set; }

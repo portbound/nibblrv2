@@ -1,25 +1,60 @@
-using Nibblr;
-using NuGet.Protocol.Core.Types;
+using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
+using Server.Exceptions.Exceptions;
+using Server.Infrastructure;
 using Server.Repositories;
-using Server.Services.Logging;
+using Server.Repositories.Interfaces;
+using Server.Services.Interfaces;
+using Shared.DTOs;
+using Shared.Models;
 
 namespace Server.Services;
 
-public class RecipeService(IRepository<Recipe> recipeRepository) : IRecipeService {
-    private readonly Logger logger = Logger.Default;
-    
-    public async Task<IResult> GetAllRecipes() {
+public class RecipeService(IRecipeRepository recipeRepository, IMapper mapper) : IRecipeService {
+    public async Task<IEnumerable<RecipeDTO>> GetAllRecipes() {
         IEnumerable<Recipe> recipes = await recipeRepository.GetAllAsync();
-        return Results.Ok(recipes);
+        return mapper.Map<IEnumerable<RecipeDTO>>(recipes);
     }
-
-    public async Task<IResult> GetRecipeById(int id) {
+    public async Task<IEnumerable<RecipeDTO>> GetRecipesByCategory(string category) {
+        IEnumerable<Recipe> recipes = await recipeRepository.GetByCategoryAsync(category);
+        return mapper.Map<IEnumerable<RecipeDTO>>(recipes);
+    }
+    public async Task<RecipeDTO?> GetRecipeById(int id) {
         Recipe? recipe = await recipeRepository.GetByIdAsync(id);
-
-        return recipe != null
-            ? Results.Ok(recipe)
-            : Results.NotFound();
+        if (recipe == null) {
+            throw new NotFoundException($"Recipe {id} not found");
+        }
+        return mapper.Map<RecipeDTO>(recipe);
     }
-
-    public void ValidateRecipe(Recipe recipe) { }
+    public async Task<bool> AddRecipe(RecipeDTO recipeDto) {
+        Validate(recipeDto);
+        Recipe? recipeEntity = mapper.Map<Recipe>(recipeDto);
+        await recipeRepository.AddAsync(recipeEntity);
+        return true;
+    }
+    public async Task<bool> UpdateRecipe(int id, RecipeDTO recipeDto) {
+        Recipe? existingRecipe = await recipeRepository.GetByIdAsync(id);
+        if (existingRecipe == null) {
+            throw new NotFoundException($"Recipe {id} not found");        }
+        Validate(recipeDto);
+        Recipe? recipeEntity = mapper.Map(recipeDto, existingRecipe);
+        await recipeRepository.UpdateAsync(recipeEntity);
+        return true;
+    }
+    public async Task<bool> RemoveRecipe(int id) {
+        Recipe? recipe = await recipeRepository.GetByIdAsync(id);
+        if (recipe == null) {
+            throw new NotFoundException($"Recipe {id} not found");
+        }
+        await recipeRepository.RemoveAsync(recipe);
+        return true;
+    }
+    
+    public bool Validate(RecipeDTO dto) {
+        RecipeValidator validator = new();
+        validator.ValidateAndThrow(dto);
+        return true;
+    }
 }
+
