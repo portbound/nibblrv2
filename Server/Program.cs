@@ -1,4 +1,5 @@
 using AutoMapper;
+using Client;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Server.Exceptions;
@@ -24,23 +25,27 @@ builder.Services.AddScoped<IMapper, Mapper>();
 builder.Services.AddOpenApi();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
- 
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.MapOpenApi();
     app.MapScalarApiReference();
-    app.UseWebAssemblyDebugging();
+    // app.UseWebAssemblyDebugging();
 }
-
+app.MapRazorComponents<App>()
+    .AddInteractiveWebAssemblyRenderMode();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
+
 app.UseStaticFiles();
 app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-app. Run();
+app.Run();
