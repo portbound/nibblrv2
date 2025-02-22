@@ -34,15 +34,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) {
     app.MapOpenApi();
     app.MapScalarApiReference();
-    // app.UseWebAssemblyDebugging();
 }
-app.MapRazorComponents<App>()
-    .AddInteractiveWebAssemblyRenderMode();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
+
+// Add Authentication and Authorization middleware if required
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Anti-forgery middleware
+app.UseAntiforgery();
+
+// Use static files and Blazor WebAssembly middleware
+app.UseStaticFiles();
 app.UseBlazorFrameworkFiles();
 
-app.UseStaticFiles();
+// Routing setup
 app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();

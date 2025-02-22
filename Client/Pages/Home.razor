@@ -1,7 +1,47 @@
 ﻿@page "/"
+@inject HttpClient Client
+@inject NavigationManager Navigation
+@using Shared.Models
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using MudBlazor
+@rendermode InteractiveWebAssembly
 
-<PageTitle>Home</PageTitle>
+<MudPaper Elevation="23"></MudPaper>
 
-<h1>Hello, world!</h1>
+@if (!recipes.Any()) {
+    <div>Loading...</div>
+} else {
+    <MudTable Elevation="23" Items="@recipes">
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Calories</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudIcon Color="Color.Error" Icon="@(context.Bookmarked ? Icons.Material.Filled.Label : null)" />
+                @context.Name
+            </MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Description</MudTd>
+            <MudTd>@context.Macros.Calories</MudTd>
+            <MudTd>
+                <MudIconButton Color="Color.Warning" Size="Size.Medium" Icon="@Icons.Material.Filled.Layers" @onclick="() => NavigateToRecipeView(context.ID)" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
 
-Welcome to your new app.
+@code {
+    List<Recipe>? recipes = [];
+
+    protected override async Task OnInitializedAsync() {
+        recipes = await Client.GetFromJsonAsync<List<Recipe>>("/api/recipes");
+    }
+
+    private void NavigateToRecipeView(int id) {
+        Navigation.NavigateTo($"RecipeView/{id}");    
+    }
+}
