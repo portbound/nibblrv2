@@ -9,4 +9,5 @@ public class RecipeDTO {
     public IEnumerable<IngredientsDTO> Ingredients { get; set; }
     public IEnumerable<InstructionsDTO> Instructions { get; set; }
     public MacrosDTO Macros { get; set; }
+    public bool Bookmarked { get; set; } = false;
 }

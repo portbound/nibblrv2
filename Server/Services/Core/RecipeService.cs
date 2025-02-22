@@ -14,11 +14,13 @@ namespace Server.Services;
 
 public class RecipeService(IRecipeRepository recipeRepository, IMapper mapper) : IRecipeService {
     public async Task<IEnumerable<RecipeDTO>> GetAllRecipes() {
-        IEnumerable<Recipe> recipes = await recipeRepository.GetAllAsync();
+        IEnumerable<Recipe> response = await recipeRepository.GetAllAsync();
+        IOrderedEnumerable<Recipe> recipes = response.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name);
         return mapper.Map<IEnumerable<RecipeDTO>>(recipes);
     }
     public async Task<IEnumerable<RecipeDTO>> GetRecipesByCategory(string category) {
-        IEnumerable<Recipe> recipes = await recipeRepository.GetByCategoryAsync(category);
+        IEnumerable<Recipe> response = await recipeRepository.GetByCategoryAsync(category);
+        IOrderedEnumerable<Recipe> recipes = response.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name);
         return mapper.Map<IEnumerable<RecipeDTO>>(recipes);
     }
     public async Task<RecipeDTO?> GetRecipeById(int id) {

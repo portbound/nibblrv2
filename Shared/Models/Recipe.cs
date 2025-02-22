@@ -7,8 +7,9 @@ public class Recipe {
     public string? URL { get; set; }
     public ICollection<Ingredients> Ingredients { get; set; }
     public ICollection<Instructions> Instructions { get; set; }
-    public Category Category { get; set; }
     public Macros Macros { get; set; }
+    public Category Category { get; set; }
+    public bool Bookmarked { get; set; } = false;
     public DateTime CreationDate { get; set; }
 
 }

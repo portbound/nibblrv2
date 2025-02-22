@@ -1,10 +1,10 @@
 -- Inserting sample recipes into Recipe table
-INSERT INTO "Recipes" (Name, Description, URL) VALUES
-('Spaghetti Bolognese', 'A classic Italian pasta dish with rich meat sauce.', 'https://www.example.com/spaghetti-bolognese'),
-('Chicken Salad', 'A healthy salad with grilled chicken, lettuce, and vegetables.', 'https://www.example.com/chicken-salad'),
-('Pancakes', 'Fluffy pancakes served with syrup and butter.', 'https://www.example.com/pancakes'),
-('Grilled Cheese Sandwich', 'A simple and delicious grilled cheese sandwich.', 'https://www.example.com/grilled-cheese'),
-('Vegetable Stir Fry', 'A mix of stir-fried vegetables with soy sauce and spices.', 'https://www.example.com/vegetable-stir-fry');
+INSERT INTO "Recipes" (Name, Description, URL, Bookmarked) VALUES
+('Spaghetti Bolognese', 'A classic Italian pasta dish with rich meat sauce.', 'https://www.example.com/spaghetti-bolognese', false),
+('Chicken Salad', 'A healthy salad with grilled chicken, lettuce, and vegetables.', 'https://www.example.com/chicken-salad', false),
+('Pancakes', 'Fluffy pancakes served with syrup and butter.', 'https://www.example.com/pancakes', false),
+('Grilled Cheese Sandwich', 'A simple and delicious grilled cheese sandwich.', 'https://www.example.com/grilled-cheese', true),
+('Vegetable Stir Fry', 'A mix of stir-fried vegetables with soy sauce and spices.', 'https://www.example.com/vegetable-stir-fry', true);
 
 -- Inserting categories for recipes (RecipeId -> Category)
 INSERT INTO "Categories" (Name, RecipeId) VALUES

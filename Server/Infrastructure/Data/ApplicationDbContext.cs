@@ -18,6 +18,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             
             entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Description);
+            entity.Property(e => e.Bookmarked);
             entity.HasIndex(e => e.URL).IsUnique();
             
             entity.HasOne(e => e.Macros)
