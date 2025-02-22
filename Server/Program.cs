@@ -1,8 +1,10 @@
 using AutoMapper;
+using Client;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using Server.Data;
 using Server.Exceptions;
+using Server.Infrastructure.Data;
+using Server.Infrastructure.Mappings;
 using Server.Repositories;
 using Server.Repositories.Interfaces;
 using Server.Services;
@@ -23,23 +25,34 @@ builder.Services.AddScoped<IMapper, Mapper>();
 builder.Services.AddOpenApi();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
- 
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.MapOpenApi();
     app.MapScalarApiReference();
-    app.UseWebAssemblyDebugging();
 }
-
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
-app.UseBlazorFrameworkFiles();
+
+// Add Authentication and Authorization middleware if required
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Anti-forgery middleware
+app.UseAntiforgery();
+
+// Use static files and Blazor WebAssembly middleware
 app.UseStaticFiles();
+app.UseBlazorFrameworkFiles();
+
+// Routing setup
 app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-app. Run();
+app.Run();

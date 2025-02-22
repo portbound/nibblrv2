@@ -2,7 +2,7 @@ using AutoMapper;
 using Shared.DTOs;
 using Shared.Models;
 
-namespace Server.Services;
+namespace Server.Infrastructure.Mappings;
 
 public class MappingProfile : Profile {
     public MappingProfile() {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Server.Exceptions.Exceptions;
+using Server.Exceptions.Types;
 
 namespace Server.Exceptions;
 

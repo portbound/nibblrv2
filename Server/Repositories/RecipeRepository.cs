@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Server.Data;
+using Server.Infrastructure.Data;
 using Server.Repositories.Interfaces;
 using Shared.Models;
 

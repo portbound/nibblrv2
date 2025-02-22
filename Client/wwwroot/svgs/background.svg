@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+    <!-- Background -->
+    <rect width="10" height="10" fill="#FAF3E1"/>
+
+    <!-- Dot pattern -->
+    <circle cx="2" cy="2" r="0.3" fill="#E8D5B5"/>
+    <circle cx="7" cy="2" r="0.3" fill="#E8D5B5"/>
+    <circle cx="2" cy="7" r="0.3" fill="#E8D5B5"/>
+    <circle cx="7" cy="7" r="0.3" fill="#E8D5B5"/>
+    
+</svg>

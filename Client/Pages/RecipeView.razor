@@ -1,0 +1,73 @@
+@page "/RecipeView/{id:int}"
+
+@using Shared.Models
+@inject HttpClient Client
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveWebAssembly
+
+<h3>RecipeComponent</h3>
+
+<div class="row">
+    <div class="col-6"></div>
+    <div class="col-6">
+        <div class="form-control">@recipe.Name</div>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Calories</th>
+                <td>@recipe.Macros.Calories</td>
+                <th>Carbs</th>
+                <td>@recipe.Macros.Carbs</td>
+                <th>Fats</th>
+                <td>@recipe.Macros.Fat</td>
+                <th>Protein</th>
+                <td>@recipe.Macros.Protein</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <table class="table">
+            <tbody>
+            @foreach (var item in recipe.Instructions) {
+                <tr>
+                    <th>
+                        @item.Step
+                    </th>
+                    <tr>
+                        @item.Body
+                    </tr>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-6">
+        <table class="table">
+            <tbody>
+            @foreach (var item in recipe.Ingredients) {
+                <tr>
+                    <th>
+                        @(item.Quantity != null ? item.Quantity : (item.Weight, item.WeightUnit))
+                    </th>
+                    <tr>
+                        @item.Name
+                    </tr>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    Recipe? recipe = null;
+    
+    protected override async Task OnInitializedAsync() {
+        recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{id}");
+    }
+}

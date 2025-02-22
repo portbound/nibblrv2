@@ -1,3 +1,3 @@
-namespace Server.Exceptions.Exceptions;
+namespace Server.Exceptions.Types;
 
 public class NotFoundException(string message) : Exception(message);

@@ -1,0 +1,23 @@
+@page "/CreateRecipe"
+<h3>CreateRecipe</h3>
+
+@* Render grid with two options to click, either generate from AI or from scratch then conditionally show/hide the manual template for entry or provide *@
+<MudGrid Spacing="@Spacing" Justify="Justify.Center">
+    <MudItem>
+        <MudPaper Outlined="true" Elevation="3" Height="300px" Width="300px">
+            <MudIconButton Icon="@Icons.Material.Filled.Cookie" Size="Size.Large" />
+            Use Nibblr
+        </MudPaper>
+    </MudItem>
+    <MudItem>
+        <MudPaper Outlined="true" Elevation="3" Height="140px" Width="140px">
+            <MudIcon Icon="@Icons.Material.Filled.MenuBook" Size="Size.Large" />
+            Create one myself
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    public int Spacing { get; set; } = 6;
+    public bool Type { get; set; }
+}
