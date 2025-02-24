@@ -6,3 +6,35 @@
     background-attachment: fixed;
     height: 100vh;
 }
+
+.spacing {
+    margin: 5px;
+}
+
+.neobrutalism-btn {
+    padding: 15px;
+    background-color: #e0e0e0;
+    border: 2px solid #000;
+    border-radius: 25%;
+    box-shadow: 5px 5px 0 black;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.neobrutalism-btn:hover {
+    background-color: #d4d4d4;
+    transform: scale(0.98); 
+    box-shadow: 4px 4px 0 black;
+}
+
+.neobrutalism-btn:active {
+    transform: scale(0.95); /* Slightly decrease size on click */
+}
+
+.recipe-title {
+    font-size: 10em;
+}

@@ -11,27 +11,32 @@
 @if (!recipes.Any()) {
     <div>Loading...</div>
 } else {
-    <MudTable Elevation="23" Items="@recipes">
-        <HeaderContent>
-            <MudTh>Name</MudTh>
-            <MudTh>Category</MudTh>
-            <MudTh>Description</MudTh>
-            <MudTh>Calories</MudTh>
-            <MudTh></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>
-                <MudIcon Color="Color.Error" Icon="@(context.Bookmarked ? Icons.Material.Filled.Label : null)" />
-                @context.Name
-            </MudTd>
-            <MudTd>@context.Name</MudTd>
-            <MudTd>@context.Description</MudTd>
-            <MudTd>@context.Macros.Calories</MudTd>
-            <MudTd>
-                <MudIconButton Color="Color.Warning" Size="Size.Medium" Icon="@Icons.Material.Filled.Layers" @onclick="() => NavigateToRecipeView(context.ID)" />
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
+    <MudSimpleTable Elevation="23" Class="nbshad">
+        <thead>
+        <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Calories</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in recipes) {
+            <tr class="spacing">
+                <td>@item.Category.Name</td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Macros.Calories</td>
+                <td>
+                    <button class="neobrutalism-btn" @onclick="() => NavigateToRecipeView(item.ID)">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit"/>
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </MudSimpleTable>
 }
 
 @code {
