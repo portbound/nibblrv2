@@ -1,0 +1,113 @@
+@* @using Shared.Models *@
+@* @inject HttpClient Client *@
+@* @inject ISnackbar Snackbar *@
+@* @using static Microsoft.AspNetCore.Components.Web.RenderMode *@
+@* @rendermode InteractiveWebAssembly *@
+@* *@
+@* @if (recipe == null) { *@
+@*     <MudProgressCircular Color="Color.Primary" Indeterminate="true" /> *@
+@* } else { *@
+@*     <MudGrid> *@
+@*         <MudItem xs="12" sm="6"> *@
+@*             <MudText Typo="Typo.h3" Inline="true">@recipe.Name</MudText> *@
+@*             <MudText Class="mt-2" Typo="Typo.subtitle1">@(!string.IsNullOrEmpty(recipe.Description) ? recipe.Description : "...")</MudText> *@
+@*             <MudPaper Class="mt-2"> *@
+@*                 <MudSimpleTable> *@
+@*                     <tbody> *@
+@*                     <tr> *@
+@*                         <th>Calories</th> *@
+@*                         <td>@recipe.Macros.Calories</td> *@
+@*                         <th>Carbs</th> *@
+@*                         <td>@recipe.Macros.Carbs</td> *@
+@*                         <th>Fats</th> *@
+@*                         <td>@recipe.Macros.Fat</td> *@
+@*                         <th>Protein</th> *@
+@*                         <td>@recipe.Macros.Protein</td> *@
+@*                     </tr> *@
+@*                     </tbody> *@
+@*                 </MudSimpleTable> *@
+@*             </MudPaper> *@
+@*             <MudGrid Justify="Justify.FlexEnd"> *@
+@*                 <MudItem> *@
+@*                     <MudFab Class="mt-5" Size="Size.Small" Color="@(recipe.Bookmarked ? Color.Error : Color.Info)" StartIcon="@Icons.Material.Filled.Bookmark" Label="@(recipe.Bookmarked ? "Remove" : "Bookmark")" @onclick="ToggleBookmark"/> *@
+@*                 </MudItem> *@
+@*             </MudGrid> *@
+@*         </MudItem> *@
+@*         <MudItem xs="12" sm="6"> *@
+@*             <MudGrid Justify="Justify.SpaceBetween"> *@
+@*                 <MudItem Class="align-self-end"> *@
+@*                     <MudText Typo="Typo.h6">Ingredients</MudText> *@
+@*                 </MudItem> *@
+@*                 <MudItem > *@
+@*                     <MudFab Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingCart" @onclick="@(() => Snackbar.Add("Grocery list updated"))"/> *@
+@*                 </MudItem> *@
+@*             </MudGrid> *@
+@*             <MudPaper Class="mt-2"> *@
+@*                 <MudSimpleTable> *@
+@*                     <tbody> *@
+@*                     @foreach (var item in formatedIngredients) { *@
+@*                         <tr> *@
+@*                             <td>@item</td> *@
+@*                         </tr> *@
+@*                     } *@
+@*                     </tbody> *@
+@*                 </MudSimpleTable> *@
+@*             </MudPaper> *@
+@*         </MudItem> *@
+@*         <MudItem Class="align-self-end"> *@
+@*             <MudText Typo="Typo.h6">Instructions</MudText> *@
+@*         </MudItem> *@
+@*         <MudItem Class="pt-0" sm="12"> *@
+@*             <MudPaper Class="mt-2"> *@
+@*                 <MudSimpleTable> *@
+@*                     <tbody> *@
+@*                     @foreach (Instructions item in recipe.Instructions) { *@
+@*                         <tr> *@
+@*                             <th>@item.Step</th> *@
+@*                             <td>@item.Body</td> *@
+@*                         </tr> *@
+@*                     } *@
+@*                     </tbody> *@
+@*                 </MudSimpleTable> *@
+@*             </MudPaper> *@
+@*         </MudItem> *@
+@*     </MudGrid> *@
+@* } *@
+@* *@
+@* *@
+@* @code { *@
+@*     private Recipe? recipe; *@
+@*     private List<string> formatedIngredients = [];  *@
+@*      *@
+@*     [Parameter] *@
+@*     public int ID { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public EventCallback<Recipe> OnRecipeSet { get; set; } *@
+@* *@
+@*     protected override async Task OnInitializedAsync() { *@
+@*         recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}"); *@
+@*          *@
+@*         if (recipe != null) { *@
+@*             FormatIngredients(recipe.Ingredients); *@
+@*             await OnRecipeSet.InvokeAsync(recipe); *@
+@*         } *@
+@*     } *@
+@*      *@
+@*     private void FormatIngredients(ICollection<Ingredients> recipeIngredients) { *@
+@*         // TODO need to refine this  *@
+@*         foreach (Ingredients item in recipe!.Ingredients) { *@
+@*             string? measurement = item.Weight is not null  *@
+@*                 ? $"{item.Weight}{item.WeightUnit}"  *@
+@*                 : item.Quantity.ToString(); *@
+@*              *@
+@*             formatedIngredients.Add($"{measurement} {item.Name}");  *@
+@*         }     *@
+@*     } *@
+@* *@
+@*     private void ToggleBookmark() { *@
+@*         recipe.Bookmarked = !recipe.Bookmarked; *@
+@*          *@
+@*         // TODO create API endpoint to actually toggle this value  *@
+@*     } *@
+@* } *@

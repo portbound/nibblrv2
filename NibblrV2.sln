@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{EF921656-F805-4DA7-ACB0-D8EFDA0D13D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nibblr.Server", "Nibblr.Server\Nibblr.Server.csproj", "{EF921656-F805-4DA7-ACB0-D8EFDA0D13D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1710C616-600A-4A50-8B8F-0FE98A2DD784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{696F0F10-F2B6-4F5E-BC63-9BCD99751D34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nibblr.Client", "Nibblr.Client\Nibblr.Client.csproj", "{696F0F10-F2B6-4F5E-BC63-9BCD99751D34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
