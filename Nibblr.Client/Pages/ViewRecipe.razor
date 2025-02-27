@@ -1,0 +1,27 @@
+@page "/RecipeView/{id:int}"
+
+@using Shared.Models
+@inject HttpClient Client
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Client.Components
+@rendermode InteractiveWebAssembly
+
+<MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
+<RecipeComponent id="ID" OnRecipeSet="RecipeSet"/>
+
+@code {
+    private string recipeName = string.Empty; 
+    private List<BreadcrumbItem> crumbs = [];
+    
+    [Parameter]
+    public int ID { get; set; }
+
+    protected void RecipeSet(Recipe recipe) {
+        recipeName = recipe.Name;
+        crumbs = [        
+            new BreadcrumbItem("Home", href: "#"),
+            new BreadcrumbItem("Recipes", href: "#"),
+            new BreadcrumbItem(recipeName, href: null, disabled: true)
+        ];
+    }
+}
