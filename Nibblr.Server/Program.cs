@@ -1,5 +1,6 @@
 using AutoMapper;
 using Client;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Server.Data;
@@ -9,6 +10,8 @@ using Server.Repositories;
 using Server.Repositories.Interfaces;
 using Server.Services;
 using Server.Services.Interfaces;
+using Server.Validators;
+using Shared.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,8 @@ builder.Services.AddDbContext<NibblrDbContext>(options => options.UseSqlite(buil
 
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
+builder.Services.AddSingleton<AbstractValidator<Recipe>, RecipeValidator>();
+    
 // builder.Services.AddScoped<IMapper, Mapper>();
 
 builder.Services.AddOpenApi();

@@ -1,6 +1,7 @@
 using OpenAI.Chat;
 using Server.Mapping;
 using Server.Services.Ai;
+using Server.Services.Interfaces;
 using Shared.Contracts.Requests;
 using Shared.Models;
 
@@ -15,14 +16,15 @@ public class OpenAiService {
     public OpenAiService() {
         _client = new ChatClient(ChatModel, key);
     }
-    
-    public async Task<Recipe?> ExtractRecipe(string url) {
-        const string systemMessage = "Extract recipe details from HTML content. If there are no nutrition facts available in the HTML, use USDA database for nutrition calculations instead.";
+
+    public async Task<CreateRecipeRequest?> ExtractRecipe(string url) {
+        const string systemMessage =
+            "Extract recipe details from HTML content. If there are no nutrition facts available in the HTML, use USDA database for nutrition calculations instead.";
         string html = HtmlScraperService.GetRecipe(url);
         CreateRecipeRequest request = await GetRecipe(systemMessage, html);
-        return request.MapToRecipe();
+        return request;
     }
-    
+
     public async Task<Recipe?> CreateRecipe(string ingredients) {
         const string systemMessage = "Create a recipe using these ingredients. Use the USDA database for approximate nutrition calculations based on the ingredients and their respective measurements.";
         CreateRecipeRequest request = await GetRecipe(systemMessage, ingredients);
@@ -83,13 +85,44 @@ public class OpenAiService {
                     "Protein": {
                       "type": "number"
                     },
-                    "IngredientsJson": {
-                      "type": "string",
-                      "description": "JSON string of ingredients following the format: Quantity (weight weight units) Name (Description if applicable)"
+                    "Ingredients": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["Name"],
+                        "properties": {
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Quantity": {
+                            "type": "number"
+                          },
+                          "Weight": {
+                            "type": "number"
+                          },
+                          "WeightUnit": {
+                            "type": "string"
+                          },
+                          "Description": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
-                    "InstructionsJson": {
-                      "type": "string",
-                      "description": "JSON string of instructions following the format: Step number Body"
+                    "Instructions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["Step", "Body"],
+                        "properties": {
+                          "Step": {
+                            "type": "integer"
+                          },
+                          "Body": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                 }
             }
