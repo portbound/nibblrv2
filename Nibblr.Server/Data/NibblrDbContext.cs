@@ -5,6 +5,8 @@ namespace Server.Data;
 
 public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbContext(options) {
     public DbSet<Recipe> Recipes => Set<Recipe>();
+    public DbSet<Instructions> Instructions => Set<Instructions>();
+    public DbSet<Ingredients> Ingredients => Set<Ingredients>();
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Recipe>(entity =>
         {
@@ -23,16 +25,39 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             entity.Property(e => e.Carbs).IsRequired();
             entity.Property(e => e.Fat).IsRequired();
             entity.Property(e => e.Protein).IsRequired();
-
-            entity.Property(e => e.IngredientsJson)
-                .HasColumnType("TEXT")
+            
+            entity.HasMany(e => e.Ingredients)
+                .WithOne()
+                .HasForeignKey(e => e.RecipeID)
                 .IsRequired()
-                .HasDefaultValue("[]");
-
-            entity.Property(e => e.InstructionsJson)
-                .HasColumnType("TEXT")
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            entity.HasMany(e => e.Instructions)
+                .WithOne()
+                .HasForeignKey(e => e.RecipeID)
                 .IsRequired()
-                .HasDefaultValue("[]");
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Ingredients>(entity =>
+        {
+            entity.HasKey(e => e.ID);
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Quantity);
+            entity.Property(e => e.Weight);
+            entity.Property(e => e.WeightUnit);
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Notes);
+        });
+        
+        modelBuilder.Entity<Instructions>(entity =>
+        {
+            entity.HasKey(e => e.ID);
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Step).IsRequired();
+            entity.Property(e => e.Body).IsRequired();
         });
     }
 }

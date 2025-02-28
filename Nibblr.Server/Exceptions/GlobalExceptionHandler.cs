@@ -24,8 +24,8 @@ public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetails
             ProblemDetails = new ProblemDetails {
                 Type = exception.GetType().Name,
                 Title = "Something went wrong",
-                Detail = exception.Message,
-                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}",
+                Detail = exception.InnerException?.Message ?? exception.Message,
+                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
             }
         });
     }

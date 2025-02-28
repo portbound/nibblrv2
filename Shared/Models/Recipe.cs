@@ -14,8 +14,10 @@ public class Recipe {
     public double Carbs { get; set; }
     public double Protein { get; set; }
     
-    public string IngredientsJson { get; set; } = string.Empty;
-    public string InstructionsJson { get; set; } = string.Empty;
+    // public string IngredientsJson { get; set; } = string.Empty;
+    // public string InstructionsJson { get; set; } = string.Empty;
+    public ICollection<Ingredients> Ingredients { get; set; }
+    public ICollection<Instructions> Instructions { get; set; }
     
     public bool Bookmarked { get; set; } = false;
 }
