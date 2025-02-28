@@ -4,8 +4,9 @@
     background-size: 50px 50px;
     background-color: #FAF3E1;
     background-attachment: fixed;
-    height: 100vh;
-}
+    min-height: 100vh; /* Ensures minimum height of viewport */
+    height: auto; /* Allows content to expand beyond viewport */
+    padding-bottom: 2rem; /* Optional: adds some space at the bottom */}
 
 .spacing {
     margin: 5px;

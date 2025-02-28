@@ -7,11 +7,19 @@
 @rendermode InteractiveWebAssembly
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
-<RecipeComponent id="ID" OnRecipeSet="RecipeSet"/>
+
+<MudButton OnClick="() => ToggleIsEditing()">Edit</MudButton>
+
+@if (!IsEditing) {
+    <RecipeComponent id="ID" OnRecipeSet="RecipeSet" />
+} else {
+    <EditRecipeComponent id="ID" OnRecipeSet="RecipeSet"/>
+}
 
 @code {
-    private string recipeName = string.Empty; 
     private List<BreadcrumbItem> crumbs = [];
+    private string recipeName = string.Empty;
+    private bool IsEditing = false;
     
     [Parameter]
     public int ID { get; set; }
@@ -23,5 +31,9 @@
             new BreadcrumbItem("Recipes", href: "#"),
             new BreadcrumbItem(recipeName, href: null, disabled: true)
         ];
+    }
+
+    private void ToggleIsEditing() {
+        IsEditing = !IsEditing;
     }
 }

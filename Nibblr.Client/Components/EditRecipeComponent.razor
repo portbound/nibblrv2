@@ -1,0 +1,236 @@
+@using Shared.Contracts.Requests
+@using Shared.Models
+@inject HttpClient Client
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveWebAssembly
+
+@if (Recipe == null) {
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+} else {
+    <MudPaper Elevation="2" Class="pa-4">
+        <MudGrid>
+            <MudItem xs="12">
+                <div class="d-flex justify-space-between align-center">
+                    <MudTextField @bind-Value="Recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
+                    <MudTooltip Text="@(Recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
+                        <MudIconButton Size="Size.Medium"
+                                       Icon="@Icons.Material.Filled.Bookmark"
+                                       Color="@(Recipe.Bookmarked ? Color.Warning : Color.Default)"
+                                       @onclick="ToggleBookmark" />
+                    </MudTooltip>
+                </div>
+                <MudTextField @bind-Value="Recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4" />
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="0" Outlined="true" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Nutritional Information</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    <MudNumericField @bind-Value="Recipe.Calories" Label="Calories" Variant="Variant.Outlined" />
+                                </MudCard>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    <MudNumericField @bind-Value="Recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined" />
+                                </MudCard>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    <MudNumericField @bind-Value="Recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined" />
+                                </MudCard>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    <MudNumericField @bind-Value="Recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined" />
+                                </MudCard>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudCard Elevation="0" Outlined="true" Class="mb-4 h-100">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Ingredients</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudTooltip Text="Add Ingredient">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" @onclick="AddNewIngredient" />
+                            </MudTooltip>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudList T="Ingredients" Dense="true">
+                            @foreach (var (ingredient, index) in Recipe.Ingredients.Select((item, i) => (item, i))) {
+                                <MudListItem>
+                                    <div class="d-flex align-center mb-2">
+                                        <MudStack Row="true" Class="flex-grow-1 align-center">
+                                            <MudNumericField @bind-Value="ingredient.Quantity" Variant="Variant.Outlined" Label="Qty" Class="mr-2" Style="width: 90px;"/>
+                                            <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Label="Ingredient" Class="mr-2" Style="flex-grow: 1;" />
+                                            <MudTextField @bind-Value="ingredient.Notes" Variant="Variant.Outlined" Label="Notes" Style="width: 150px;"/>
+                                        </MudStack>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" @onclick="@(() => RemoveIngredient())" Class="ml-2" />
+                                    </div>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudCard Elevation="0" Outlined="true" Class="h-100">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Instructions</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudTooltip Text="Add Instruction">
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" @onclick="AddNewInstruction" />
+                            </MudTooltip>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudList T="Instructions">
+                            @foreach (var instruction in Recipe.Instructions) {
+                                <MudListItem>
+                                    <div class="d-flex mb-2">
+                                        <MudAvatar Color="Color.Info" Class="mr-3 align-self-center" Size="Size.Medium">@instruction.Step</MudAvatar>
+                                        <div class="flex-grow-1">
+                                            <MudTextField @bind-Value="instruction.Body" Variant="Variant.Outlined" Lines="2" Label="Instruction" />
+                                        </div>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" @onclick="@(() => RemoveInstruction(instruction.Step))" Class="ml-2" />
+                                    </div>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" Class="d-flex justify-end mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Error"
+                           Class="mr-2">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Success"
+                           @onclick="SaveRecipe">Save Recipe</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
+
+
+@code {
+    private Recipe? Recipe = new();
+    private UpdateRecipeRequest UpdatedRecipe;
+    
+    [Parameter] public int ID { get; set; }
+    [Parameter] public EventCallback<Recipe> OnRecipeSet { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        Recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
+
+        if (Recipe != null) {
+            await OnRecipeSet.InvokeAsync(Recipe);
+        }
+    }
+
+    private string FormatQuantity(Ingredients ingredient) {
+        if (ingredient.Weight is not null) {
+            return $"{ingredient.Weight}{ingredient.WeightUnit}";
+        }
+
+        if (ingredient.Quantity.HasValue && ingredient.Quantity.Value != 0) {
+            // Format fractions nicely
+            if (ingredient.Quantity == 0.25) return "¼";
+            if (ingredient.Quantity == 0.5) return "½";
+            if (ingredient.Quantity == 0.75) return "¾";
+            if (ingredient.Quantity == 0.33 || ingredient.Quantity == 0.333) return "⅓";
+            if (ingredient.Quantity == 0.66 || ingredient.Quantity == 0.667) return "⅔";
+
+            // Whole numbers don't need decimal places
+            if (ingredient.Quantity % 1 == 0) {
+                return ingredient.Quantity.Value.ToString("0");
+            }
+
+            return ingredient.Quantity.Value.ToString("0.##");
+        }
+
+        return string.Empty;
+    }
+
+    private void AddToShoppingList(Ingredients ingredient) {
+        Snackbar.Add($"Added {ingredient.Name} to shopping list", Severity.Success);
+        // Implement shopping list functionality
+    }
+
+    private void ToggleBookmark() {
+        Recipe.Bookmarked = !Recipe.Bookmarked;
+    }
+
+    private UpdateRecipeRequest CloneRecipe(Recipe sourceRecipe) {
+        UpdateRecipeRequest updatedRecipe = new UpdateRecipeRequest {
+            Name = sourceRecipe.Name,
+            Category = sourceRecipe.Category,
+            Description = sourceRecipe.Description,
+            URL = sourceRecipe.URL,
+            Servings = sourceRecipe.Servings,
+            Calories = sourceRecipe.Calories,
+            Fat = sourceRecipe.Fat,
+            Carbs = sourceRecipe.Carbs,
+            Protein = sourceRecipe.Protein,
+            Bookmarked = sourceRecipe.Bookmarked,
+            Ingredients = sourceRecipe.Ingredients.Select(i => new Ingredients {
+                    Name = i.Name,
+                    Quantity = i.Quantity,
+                    Weight = i.Weight,
+                    WeightUnit = i.WeightUnit,
+                    Notes = i.Notes
+            }).ToList(),
+            Instructions = sourceRecipe.Instructions.Select(i => new Instructions {
+                    Step = i.Step,
+                    Body = i.Body
+            }).ToList(),
+        };
+        return updatedRecipe;
+    }
+
+    private void AddNewIngredient() {
+
+    }
+
+    private void RemoveIngredient() {
+    }
+
+    private void AddNewInstruction() {
+
+    }
+
+    private void RemoveInstruction(int step) {
+
+    }
+
+    private async Task SaveRecipe() {
+        try {
+            var response = await Client.PutAsJsonAsync($"api/recipes/{ID}", Recipe);
+
+            if (response.IsSuccessStatusCode) {
+                Snackbar.Add("Recipe saved successfully", Severity.Success);
+            } else {
+                Snackbar.Add("Error saving recipe", Severity.Error);
+            }
+        } catch (Exception ex) {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+    }
+}

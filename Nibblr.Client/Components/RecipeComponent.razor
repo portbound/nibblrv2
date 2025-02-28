@@ -1,113 +1,345 @@
-@* @using Shared.Models *@
-@* @inject HttpClient Client *@
-@* @inject ISnackbar Snackbar *@
-@* @using static Microsoft.AspNetCore.Components.Web.RenderMode *@
-@* @rendermode InteractiveWebAssembly *@
-@* *@
-@* @if (recipe == null) { *@
-@*     <MudProgressCircular Color="Color.Primary" Indeterminate="true" /> *@
-@* } else { *@
-@*     <MudGrid> *@
-@*         <MudItem xs="12" sm="6"> *@
-@*             <MudText Typo="Typo.h3" Inline="true">@recipe.Name</MudText> *@
-@*             <MudText Class="mt-2" Typo="Typo.subtitle1">@(!string.IsNullOrEmpty(recipe.Description) ? recipe.Description : "...")</MudText> *@
-@*             <MudPaper Class="mt-2"> *@
-@*                 <MudSimpleTable> *@
-@*                     <tbody> *@
-@*                     <tr> *@
-@*                         <th>Calories</th> *@
-@*                         <td>@recipe.Macros.Calories</td> *@
-@*                         <th>Carbs</th> *@
-@*                         <td>@recipe.Macros.Carbs</td> *@
-@*                         <th>Fats</th> *@
-@*                         <td>@recipe.Macros.Fat</td> *@
-@*                         <th>Protein</th> *@
-@*                         <td>@recipe.Macros.Protein</td> *@
-@*                     </tr> *@
-@*                     </tbody> *@
-@*                 </MudSimpleTable> *@
-@*             </MudPaper> *@
-@*             <MudGrid Justify="Justify.FlexEnd"> *@
-@*                 <MudItem> *@
-@*                     <MudFab Class="mt-5" Size="Size.Small" Color="@(recipe.Bookmarked ? Color.Error : Color.Info)" StartIcon="@Icons.Material.Filled.Bookmark" Label="@(recipe.Bookmarked ? "Remove" : "Bookmark")" @onclick="ToggleBookmark"/> *@
-@*                 </MudItem> *@
-@*             </MudGrid> *@
-@*         </MudItem> *@
-@*         <MudItem xs="12" sm="6"> *@
-@*             <MudGrid Justify="Justify.SpaceBetween"> *@
-@*                 <MudItem Class="align-self-end"> *@
-@*                     <MudText Typo="Typo.h6">Ingredients</MudText> *@
-@*                 </MudItem> *@
-@*                 <MudItem > *@
-@*                     <MudFab Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingCart" @onclick="@(() => Snackbar.Add("Grocery list updated"))"/> *@
-@*                 </MudItem> *@
-@*             </MudGrid> *@
-@*             <MudPaper Class="mt-2"> *@
-@*                 <MudSimpleTable> *@
-@*                     <tbody> *@
-@*                     @foreach (var item in formatedIngredients) { *@
-@*                         <tr> *@
-@*                             <td>@item</td> *@
-@*                         </tr> *@
-@*                     } *@
-@*                     </tbody> *@
-@*                 </MudSimpleTable> *@
-@*             </MudPaper> *@
-@*         </MudItem> *@
-@*         <MudItem Class="align-self-end"> *@
-@*             <MudText Typo="Typo.h6">Instructions</MudText> *@
-@*         </MudItem> *@
-@*         <MudItem Class="pt-0" sm="12"> *@
-@*             <MudPaper Class="mt-2"> *@
-@*                 <MudSimpleTable> *@
-@*                     <tbody> *@
-@*                     @foreach (Instructions item in recipe.Instructions) { *@
-@*                         <tr> *@
-@*                             <th>@item.Step</th> *@
-@*                             <td>@item.Body</td> *@
-@*                         </tr> *@
-@*                     } *@
-@*                     </tbody> *@
-@*                 </MudSimpleTable> *@
-@*             </MudPaper> *@
-@*         </MudItem> *@
-@*     </MudGrid> *@
-@* } *@
-@* *@
-@* *@
-@* @code { *@
-@*     private Recipe? recipe; *@
-@*     private List<string> formatedIngredients = [];  *@
-@*      *@
-@*     [Parameter] *@
-@*     public int ID { get; set; } *@
-@*      *@
-@*     [Parameter] *@
-@*     public EventCallback<Recipe> OnRecipeSet { get; set; } *@
-@* *@
-@*     protected override async Task OnInitializedAsync() { *@
-@*         recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}"); *@
-@*          *@
-@*         if (recipe != null) { *@
-@*             FormatIngredients(recipe.Ingredients); *@
-@*             await OnRecipeSet.InvokeAsync(recipe); *@
-@*         } *@
-@*     } *@
-@*      *@
-@*     private void FormatIngredients(ICollection<Ingredients> recipeIngredients) { *@
-@*         // TODO need to refine this  *@
-@*         foreach (Ingredients item in recipe!.Ingredients) { *@
-@*             string? measurement = item.Weight is not null  *@
-@*                 ? $"{item.Weight}{item.WeightUnit}"  *@
-@*                 : item.Quantity.ToString(); *@
-@*              *@
-@*             formatedIngredients.Add($"{measurement} {item.Name}");  *@
-@*         }     *@
-@*     } *@
-@* *@
-@*     private void ToggleBookmark() { *@
-@*         recipe.Bookmarked = !recipe.Bookmarked; *@
-@*          *@
-@*         // TODO create API endpoint to actually toggle this value  *@
-@*     } *@
-@* } *@
+@using Shared.Models
+@inject HttpClient Client
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveWebAssembly
+
+@if (recipe == null) {
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+} else {
+    <MudPaper Elevation="2" Class="pa-4">
+        <MudGrid>
+            <MudItem xs="12">
+                <div class="d-flex justify-space-between align-center">
+                    @if (isEditing) {
+                        <MudTextField @bind-Value="recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
+                    } else {
+                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h3">@recipe.Name</MudText>
+                            <MudTooltip Text="Edit Recipe">
+                                <MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.EditNote" Color="Color.Info" @onclick="ToggleEditMode" />
+                            </MudTooltip>
+                        </MudStack>
+                    }
+                    <MudTooltip Text="@(recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
+                        <MudIconButton Size="Size.Medium"
+                                       Icon="@Icons.Material.Filled.Bookmark"
+                                       Color="@(recipe.Bookmarked ? Color.Warning : Color.Default)"
+                                       @onclick="ToggleBookmark" />
+                    </MudTooltip>
+                </div>
+                @if (isEditing) {
+                    <MudTextField @bind-Value="recipe.Description" Label="Description" 
+                                  Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4" />
+                } else {
+                    <MudText Class="mt-2 mb-4" Typo="Typo.subtitle1">
+                        @(!string.IsNullOrEmpty(recipe.Description) ? recipe.Description : "No description available.")
+                    </MudText>
+                }
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="0" Outlined="true" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Nutritional Information</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    @if (isEditing) {
+                                        <MudNumericField @bind-Value="recipe.Calories" Label="Calories" Variant="Variant.Outlined" />
+                                    } else {
+                                        <MudText Typo="Typo.h5">@recipe.Calories</MudText>
+                                        <MudText Typo="Typo.caption">Calories</MudText>
+                                    }
+                                </MudCard>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    @if (isEditing) {
+                                        <MudNumericField @bind-Value="recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined" />
+                                    } else {
+                                        <MudText Typo="Typo.h5">@recipe.Fat g</MudText>
+                                        <MudText Typo="Typo.caption">Fats</MudText>
+                                    }
+                                </MudCard>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    @if (isEditing) {
+                                        <MudNumericField @bind-Value="recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined" />
+                                    } else {
+                                        <MudText Typo="Typo.h5">@recipe.Carbs g</MudText>
+                                        <MudText Typo="Typo.caption">Carbs</MudText>
+                                    }
+                                </MudCard>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    @if (isEditing) {
+                                        <MudNumericField @bind-Value="recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined" />
+                                    } else {
+                                        <MudText Typo="Typo.h5">@recipe.Protein g</MudText>
+                                        <MudText Typo="Typo.caption">Protein</MudText>
+                                    }
+                                </MudCard>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="6">
+                <MudCard Elevation="0" Outlined="true" Class="mb-4 h-100">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Ingredients</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            @if (isEditing) {
+                                <MudTooltip Text="Add Ingredient">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" 
+                                                   @onclick="AddNewIngredient" />
+                                </MudTooltip>
+                            } else {
+                                <MudTooltip Text="Add all to shopping list">
+                                    <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary"
+                                                   @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/>
+                                </MudTooltip>
+                            }
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudList T="Ingredients" Dense="true" ReadOnly="true">
+                            @foreach (Ingredients ingredient in recipe.Ingredients) {
+                                <MudListItem >
+                                    @if (isEditing) {
+                                        <MudStack Row="true" Class="flex-grow-1 align-center">
+                                            <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Label="Ingredient" Class="mr-2" />
+                                            <MudIconButton Class="ml-2 align-self-center" Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveIngredient(ingredient))" />
+                                        </MudStack>
+                                        <MudStack Row="true" Class="flex-grow-1 align-center">
+                                                <MudNumericField @bind-Value="ingredient.Quantity" Variant="Variant.Outlined" Label="Qty" Class="mr-2" />
+                                                <MudNumericField @bind-Value="ingredient.Weight" Variant="Variant.Outlined" Label="Weight" Class="mr-2" />
+                                                <MudTextField @bind-Value="ingredient.WeightUnit" Variant="Variant.Outlined" Label="Unit" Class="mr-2" />
+                                        </MudStack>
+                                        <MudStack Row="true" Class="flex-grow-1 align-center">
+                                            <MudTextField @bind-Value="ingredient.Notes" Variant="Variant.Outlined" Label="Notes" />
+                                        </MudStack>
+                                    } else {
+                                        <div class="d-flex align-center">
+                                            <div class="flex-grow-1">
+                                                <MudText>
+                                                    <b>@FormatQuantity(ingredient)</b> @ingredient.Name
+                                                </MudText>
+                                                @if (!string.IsNullOrEmpty(ingredient.Notes)) {
+                                                    <MudText Typo="Typo.caption" Color="Color.Secondary">@ingredient.Notes</MudText>
+                                                }
+                                            </div>
+                                            <MudTooltip Text="Add to shopping list">
+                                                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Default"
+                                                               @onclick="@(() => AddToShoppingList(ingredient))"/>
+                                            </MudTooltip>
+                                        </div>
+                                    }
+                                </MudListItem>
+                            }
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudCard Elevation="0" Outlined="true" Class="h-100">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Instructions</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            @if (isEditing) {
+                                <MudTooltip Text="Add Instruction">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Success" 
+                                                   @onclick="AddNewInstruction" />
+                                </MudTooltip>
+                            } else {
+                                <MudTooltip Text="Print instructions">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Default" />
+                                </MudTooltip>
+                            }
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudList T="Instructions" Dense="true" ReadOnly="true">
+                            @foreach (Instructions instruction in recipe.Instructions) {
+                                <MudListItem>
+                                    @if (isEditing) {
+                                        <div class="d-flex mb-2">
+                                            <MudAvatar Class="mr-3 align-self-center" Color="Color.Info" Size="Size.Medium">@instruction.Step</MudAvatar>
+                                            <div class="flex-grow-1">
+                                                <MudTextField @bind-Value="instruction.Body" Variant="Variant.Outlined" 
+                                                             Lines="2" Label="Instruction" />
+                                            </div>
+                                            <MudIconButton Class="ml-2 align-self-center" Icon="@Icons.Material.Filled.Close"  Color="Color.Error" 
+                                                            @onclick="@(() => RemoveInstruction(instruction))" />
+                                        </div>
+                                    } else {
+                                        <div class="d-flex">
+                                            <MudAvatar Color="Color.Info" Class="mr-3" Size="Size.Medium">@instruction.Step</MudAvatar>
+                                            <div>
+                                                <MudText>@instruction.Body</MudText>
+                                            </div>
+                                        </div>
+                                    }
+                                </MudListItem>
+                            }    
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            @if (isEditing) {
+                <MudItem xs="12" Class="d-flex justify-end mt-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" 
+                               Class="mr-2" @onclick="CancelEdit">Cancel</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" 
+                               @onclick="SaveRecipe">Save Recipe</MudButton>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudPaper>
+}
+
+
+@code {
+    private Recipe? recipe = new();
+    private Recipe? originalRecipe; // To store the original state for cancel functionality
+    private bool isEditing = false;
+
+    [Parameter] public int ID { get; set; }
+
+    [Parameter] public EventCallback<Recipe> OnRecipeSet { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
+
+        if (recipe != null) {
+            await OnRecipeSet.InvokeAsync(recipe);
+        }
+    }
+
+    private string FormatQuantity(Ingredients ingredient) {
+        if (ingredient.Weight is not null) {
+            return $"{ingredient.Weight}{ingredient.WeightUnit}";
+        }
+
+        if (ingredient.Quantity.HasValue && ingredient.Quantity.Value != 0) {
+            // Format fractions nicely
+            if (ingredient.Quantity == 0.25) return "¼";
+            if (ingredient.Quantity == 0.5) return "½";
+            if (ingredient.Quantity == 0.75) return "¾";
+            if (ingredient.Quantity == 0.33 || ingredient.Quantity == 0.333) return "⅓";
+            if (ingredient.Quantity == 0.66 || ingredient.Quantity == 0.667) return "⅔";
+
+            // Whole numbers don't need decimal places
+            if (ingredient.Quantity % 1 == 0) {
+                return ingredient.Quantity.Value.ToString("0");
+            }
+
+            return ingredient.Quantity.Value.ToString("0.##");
+        }
+
+        return string.Empty;
+    }
+
+    private void AddToShoppingList(Ingredients ingredient) {
+        Snackbar.Add($"Added {ingredient.Name} to shopping list", Severity.Success);
+        // Implement shopping list functionality
+    }
+
+    private void ToggleBookmark() {
+        recipe.Bookmarked = !recipe.Bookmarked;
+    }
+    
+    private void ToggleEditMode() {
+        if (!isEditing) {
+            // Create deep copy of recipe for cancel functionality
+            originalRecipe = CloneRecipe(recipe);
+            isEditing = true;
+        } else {
+            isEditing = false;
+        }
+    }
+    
+    private Recipe CloneRecipe(Recipe sourceRecipe) {
+        var newRecipe = new Recipe {
+            ID = sourceRecipe.ID,
+            Name = sourceRecipe.Name,
+            Description = sourceRecipe.Description,
+            Calories = sourceRecipe.Calories,
+            Fat = sourceRecipe.Fat,
+            Carbs = sourceRecipe.Carbs,
+            Protein = sourceRecipe.Protein,
+            Bookmarked = sourceRecipe.Bookmarked,
+            Ingredients = sourceRecipe.Ingredients.Select(i => new Ingredients {
+                Name = i.Name,
+                Quantity = i.Quantity,
+                Weight = i.Weight,
+                WeightUnit = i.WeightUnit,
+                Notes = i.Notes
+            }).ToList(),
+            Instructions = sourceRecipe.Instructions.Select(i => new Instructions {
+                Step = i.Step,
+                Body = i.Body
+            }).ToList()
+        };
+        return newRecipe;
+    }
+    
+    private void AddNewIngredient() {
+        recipe.Ingredients.Add(new Ingredients {
+            Name = "New Ingredient",
+            Quantity = 1
+        });
+    }
+    
+    private void RemoveIngredient(Ingredients ingredient) {
+        recipe.Ingredients.Remove(ingredient);
+    }
+    
+    private void AddNewInstruction() {
+        int nextStep = recipe.Instructions.Count + 1;
+        recipe.Instructions.Add(new Instructions {
+            Step = nextStep,
+            Body = "Next step..."
+        });
+    }
+    
+    private void RemoveInstruction(Instructions instruction) {
+        recipe.Instructions.Remove(instruction);
+        for (int i = 0; i < recipe.Instructions.Count; i++) {
+            recipe.Instructions.ElementAt(i).Step = i + 1;
+        }
+    }
+    
+    private async Task SaveRecipe() {
+        try {
+            HttpResponseMessage response = await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+            
+            if (response.IsSuccessStatusCode) {
+                Snackbar.Add("Recipe saved successfully", Severity.Success);
+                isEditing = false;
+            } else {
+                Snackbar.Add("Error saving recipe", Severity.Error);
+            }
+        } catch (Exception ex) {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+    }
+    
+    private void CancelEdit() {
+        recipe = originalRecipe;
+        isEditing = false;
+    }
+}
