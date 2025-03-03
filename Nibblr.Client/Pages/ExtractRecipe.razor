@@ -1,14 +1,12 @@
 @page "/ExtractRecipe"
 @inject HttpClient Client
-@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
 @using System.Web
 @using Shared.Models
-@using Shared.Contracts.Requests
-@using Client.Components
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
 
-<MudGrid>
+<MudGrid Class="mb-5">
     <MudItem xs="11">
         <MudPaper>
             <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
@@ -23,120 +21,28 @@
     <MudProgressLinear Color="Color.Tertiary" Indeterminate="true" Class="my-7" />
 }
 
-@if (ExtractedRecipe != null) {
-    <MudGrid>
-        <MudItem xs="12" sm="6">
-            <MudStack Row="true">
-                <MudText Typo="Typo.h3">@ExtractedRecipe.Name</MudText>
-                <MudFab Class="align-self-center" Size="Size.Small" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Edit"/>
-            </MudStack>
-            <MudText Class="mt-2" Typo="Typo.subtitle1">@(!string.IsNullOrEmpty(ExtractedRecipe.Description) ? ExtractedRecipe.Description : "...")</MudText>
-            @* <MudGrid Justify="Justify.FlexEnd"> *@
-            @* <MudItem> *@
-            @*     <MudFab Class="mt-2" Size="Size.Small" Color="@(recipe.Bookmarked ? Color.Error : Color.Info)" StartIcon="@Icons.Material.Filled.Bookmark" Label="@(recipe.Bookmarked ? "Remove" : "Bookmark")" @onclick="ToggleBookmark"/> *@
-            @* </MudItem> *@
-            @* </MudGrid> *@
-            <MudPaper Class="mt-2">
-                <MudSimpleTable>
-                    <tbody>
-                    <tr>
-                        <th>Calories</th>
-                        <td>@ExtractedRecipe.Calories</td>
-                        <th>Carbs</th>
-                        <td>@ExtractedRecipe.Carbs</td>
-                        <th>Fats</th>
-                        <td>@ExtractedRecipe.Fat</td>
-                        <th>Protein</th>
-                        <td>@ExtractedRecipe.Protein</td>
-                    </tr>
-                    </tbody>
-                </MudSimpleTable>
-            </MudPaper>
-            <MudPaper Class="mt-2">
-                <MudSimpleTable>
-                    <tbody>
-                    @foreach (var item in FormatedIngredients) {
-                        <tr>
-                            <td>@item</td>
-                        </tr>
-                    }
-                    </tbody>
-                </MudSimpleTable>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6">
-            <MudGrid Justify="Justify.SpaceBetween">
-                <MudItem Class="align-self-end">
-                    <MudText Typo="Typo.h6">Instructions</MudText>
-                </MudItem>
-                @* <MudItem > *@
-                @*     <MudFab Size="Size.Small" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ShoppingCart" @onclick="@(() => Snackbar.Add("Grocery list updated"))"/> *@
-                @* </MudItem> *@
-            </MudGrid>
-            <MudPaper Class="mt-2">
-                <MudSimpleTable>
-                    <tbody>
-                    @foreach (Instructions item in ExtractedRecipe.Instructions) {
-                        <tr>
-                            <th>@item.Step</th>
-                            <td>@item.Body</td>
-                        </tr>
-                    }
-                    </tbody>
-                </MudSimpleTable>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-    
-}
-
 @code {
-
     private readonly List<BreadcrumbItem> crumbs = [
         new BreadcrumbItem("Home", href: "#"),
         new BreadcrumbItem("Extract Recipe", href: null, disabled: true),
     ];
 
-    private CreateRecipeRequest? ExtractedRecipe { get; set; } = null;
-    private readonly List<string> FormatedIngredients = [];
-
+    private Recipe? ExtractedRecipe { get; set; } = null;
     private bool IsLoading { get; set; } = false;
 
     [Parameter] public string Url { get; set; }
 
-    protected override async Task OnInitializedAsync() {
-        CreateRecipeRequest? recipe = await Client.GetFromJsonAsync<CreateRecipeRequest>($"api/recipes/3");
-        if (recipe != null) {
-            ExtractedRecipe = recipe;
-            FormatIngredients(ExtractedRecipe.Ingredients);
-
-        }
-    }
-
     private async Task ExtractRecipeAsync(string url) {
         IsLoading = true;
         var encodedURI = HttpUtility.UrlEncode(Url);
-        CreateRecipeRequest? recipe = await Client.GetFromJsonAsync<CreateRecipeRequest>($"/api/AI/extract?url={encodedURI}");
+        ExtractedRecipe = await Client.GetFromJsonAsync<Recipe>($"/api/AI/extract?url={encodedURI}");
+        var response = await Client.PostAsJsonAsync("api/recipes", ExtractedRecipe);
+        var createdRecipe = await response.Content.ReadFromJsonAsync<Recipe>();
         IsLoading = false;
-
-        if (recipe is not null) {
-            ExtractedRecipe = recipe;
-        }
+        NavigateToRecipeView(createdRecipe.ID);
     }
     
-    private void FormatIngredients(ICollection<Ingredients> recipeIngredients) {
-        // TODO need to refine this
-        foreach (Ingredients item in ExtractedRecipe!.Ingredients) {
-            string? measurement = item.Weight is not null
-                ? $"{item.Weight}{item.WeightUnit}"
-                : item.Quantity.ToString();
-
-            FormatedIngredients.Add($"{measurement} {item.Name}");
-        }
+    private void NavigateToRecipeView(int id) {
+        Navigation.NavigateTo($"RecipeView/{id}");    
     }
-
-    private async Task SaveRecipe() {
-        await Client.PostAsJsonAsync<CreateRecipeRequest>("api/recipes/create", ExtractedRecipe);
-    }
-
 }

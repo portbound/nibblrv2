@@ -10,10 +10,11 @@ namespace Server.Services;
 
 public class RecipeService(IRecipeRepository _recipeRepository, AbstractValidator<Recipe> validator) : IRecipeService {
     
-    public async Task<bool> CreateAsync(CreateRecipeRequest request) {
+    public async Task<(bool status, Recipe recipe)> CreateAsync(CreateRecipeRequest request) {
         Recipe recipe = request.MapToRecipe(); 
         await validator.ValidateAndThrowAsync(recipe);
-        return await _recipeRepository.CreateAsync(recipe);
+        var status = await _recipeRepository.CreateAsync(recipe);
+        return (status, recipe);
     }
     
     public async Task<RecipeResponse?> GetByIdAsync(int id) {
