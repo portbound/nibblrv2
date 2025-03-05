@@ -10,7 +10,6 @@ public static class ContractMapping {
     public static Recipe MapToRecipe(this CreateRecipeRequest request) {
         return new Recipe {
             Name = request.Name,
-            Category = request.Category,
             URL = !string.IsNullOrEmpty(request.URL) ? request.URL : string.Empty,
             Description = request.Description,
             Ingredients = request.Ingredients.Select(x => new Ingredients {
@@ -23,6 +22,9 @@ public static class ContractMapping {
             Instructions = request.Instructions.Select(x => new Instructions {
                 Step = x.Step,
                 Body = x.Body,
+            }).ToList(),
+            Tags = request.Tags.Select(x => new Tags {
+                Name = x.Name,
             }).ToList(),
             Servings = request.Servings,
             Calories = request.Calories,
@@ -37,7 +39,6 @@ public static class ContractMapping {
         return new RecipeResponse {
             ID = recipe.ID, 
             Name = recipe.Name,
-            Category = recipe.Category,
             URL = !string.IsNullOrEmpty(recipe.URL) ? recipe.URL : string.Empty,
             Description = recipe.Description,
             Ingredients = recipe.Ingredients.Select(x => new Ingredients {
@@ -54,6 +55,9 @@ public static class ContractMapping {
                 RecipeID = recipe.ID,
                 Step = x.Step,
                 Body = x.Body,
+            }).ToList(),
+            Tags = recipe.Tags.Select(x => new Tags {
+                Name = x.Name,
             }).ToList(),
             Servings = recipe.Servings,
             Calories = recipe.Calories,
@@ -74,7 +78,6 @@ public static class ContractMapping {
         return new Recipe {
             ID = id,
             Name = request.Name,
-            Category = request.Category,
             URL = !string.IsNullOrEmpty(request.URL) ? request.URL : string.Empty,
             Description = request.Description,
             Ingredients = request.Ingredients.Select(x => new Ingredients {
@@ -89,6 +92,9 @@ public static class ContractMapping {
                 RecipeID = id,
                 Step = x.Step,
                 Body = x.Body,
+            }).ToList(),
+            Tags = request.Tags.Select(x => new Tags {
+                Name = x.Name,
             }).ToList(),
             Servings = request.Servings,
             Calories = request.Calories,

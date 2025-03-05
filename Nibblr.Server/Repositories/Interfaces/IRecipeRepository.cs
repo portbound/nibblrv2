@@ -8,6 +8,4 @@ public interface IRecipeRepository {
     Task<Recipe?> GetByIdAsync(int id);
     Task<bool> UpdateAsync(Recipe recipe);
     Task<bool> DeleteAsync(int id);
-    
-    // Task<IEnumerable<Recipe>> GetByCategoryAsync(string category);
 }

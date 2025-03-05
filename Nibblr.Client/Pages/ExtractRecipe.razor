@@ -1,13 +1,12 @@
 @page "/ExtractRecipe"
 @inject HttpClient Client
-@using System.Text.Encodings.Web
+@inject NavigationManager Navigation
 @using System.Web
 @using Shared.Models
-@using Client.Components
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
 
-<MudGrid>
+<MudGrid Class="mb-5">
     <MudItem xs="11">
         <MudPaper>
             <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
@@ -18,29 +17,32 @@
     </MudItem>
 </MudGrid>
 
-@if (ExtractedRecipe is not null) { 
-    // TODO Replace this with editable Recipe Component 
-    <TemporaryRecipeComponent ExtractedRecipe="ExtractedRecipe"/>
- }
+@if (IsLoading) {
+    <MudProgressLinear Color="Color.Tertiary" Indeterminate="true" Class="my-7" />
+}
 
 @code {
-    private readonly List<BreadcrumbItem> crumbs =
-    [
+    private readonly List<BreadcrumbItem> crumbs = [
         new BreadcrumbItem("Home", href: "#"),
         new BreadcrumbItem("Extract Recipe", href: null, disabled: true),
     ];
 
-    public Recipe? ExtractedRecipe { get; set; } = null;
-    
-    [Parameter]
-    public string Url { get; set; }
+    private Recipe? ExtractedRecipe { get; set; } = null;
+    private bool IsLoading { get; set; } = false;
+
+    [Parameter] public string Url { get; set; }
 
     private async Task ExtractRecipeAsync(string url) {
+        IsLoading = true;
         var encodedURI = HttpUtility.UrlEncode(Url);
-        Recipe? recipe = await Client.GetFromJsonAsync<Recipe>($"/api/AI/extract?url={encodedURI}");
-
-        if (recipe is not null) {
-            ExtractedRecipe = recipe;
-        }
+        ExtractedRecipe = await Client.GetFromJsonAsync<Recipe>($"/api/AI/extract?url={encodedURI}");
+        var response = await Client.PostAsJsonAsync("api/recipes", ExtractedRecipe);
+        var createdRecipe = await response.Content.ReadFromJsonAsync<Recipe>();
+        IsLoading = false;
+        NavigateToRecipeView(createdRecipe.ID);
+    }
+    
+    private void NavigateToRecipeView(int id) {
+        Navigation.NavigateTo($"RecipeView/{id}");    
     }
 }

@@ -12,9 +12,9 @@ public class RecipeController(IRecipeService _recipeService) : ControllerBase {
     [HttpPost(ApiEndpoints.Recipes.Create)]
     public async Task<IActionResult> Create([FromBody] CreateRecipeRequest request) {
         var created = await _recipeService.CreateAsync(request);
-        return !created ? 
+        return !created.status ? 
             BadRequest() :
-            Ok(created);
+            Ok(created.recipe);
     }
     
     [HttpGet(ApiEndpoints.Recipes.Get)]

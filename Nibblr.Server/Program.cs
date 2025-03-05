@@ -22,6 +22,8 @@ builder.Services.AddDbContext<NibblrDbContext>(options => options.UseSqlite(buil
 
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
+builder.Services.AddScoped<ITagsRepository, TagsRepository>();
+builder.Services.AddScoped<ITagsService, TagsService>();
 builder.Services.AddSingleton<AbstractValidator<Recipe>, RecipeValidator>();
     
 // builder.Services.AddScoped<IMapper, Mapper>();

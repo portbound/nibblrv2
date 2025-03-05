@@ -6,22 +6,32 @@
 @using Client.Components
 @rendermode InteractiveWebAssembly
 
-<MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
-<RecipeComponent id="ID" OnRecipeSet="RecipeSet"/>
+<MudBreadcrumbs Items="Crumbs"></MudBreadcrumbs>
+
+@if (IsEditing) {
+    <EditRecipeComponent id="ID" OnRecipeSet="RecipeSet" OnToggleIsEditing="ToggleIsEditing"/> 
+} else {
+    <RecipeComponent id="ID" OnRecipeSet="RecipeSet" OnToggleIsEditing="ToggleIsEditing"/>
+}
 
 @code {
-    private string recipeName = string.Empty; 
-    private List<BreadcrumbItem> crumbs = [];
+    private List<BreadcrumbItem> Crumbs = [];
+    private string RecipeName = string.Empty;
+    private bool IsEditing = false;
     
     [Parameter]
     public int ID { get; set; }
 
-    protected void RecipeSet(Recipe recipe) {
-        recipeName = recipe.Name;
-        crumbs = [        
+    protected void RecipeSet(string name) {
+        RecipeName = name;
+        Crumbs = [        
             new BreadcrumbItem("Home", href: "#"),
             new BreadcrumbItem("Recipes", href: "#"),
-            new BreadcrumbItem(recipeName, href: null, disabled: true)
+            new BreadcrumbItem(RecipeName, href: null, disabled: true)
         ];
+    }
+
+    private void ToggleIsEditing() {
+        IsEditing = !IsEditing;
     }
 }
