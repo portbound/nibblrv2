@@ -9,7 +9,6 @@ public class RecipeValidator : AbstractValidator<Recipe> {
             .NotEmpty()
             .MaximumLength(50);
         
-        RuleFor(x => x.Category).NotEmpty();
         RuleFor(x => x.Description).Length(1, 250);
         RuleFor(x => x.Bookmarked).NotNull();
 
@@ -30,6 +29,10 @@ public class RecipeValidator : AbstractValidator<Recipe> {
             instruction.RuleFor(x => x.Step).NotEmpty();
             instruction.RuleFor(x => x.Body).MaximumLength(1000).NotEmpty();
         }).NotEmpty();
-
+        
+        RuleForEach(x => x.Tags).ChildRules(tag =>
+        {
+            tag.RuleFor(x => x.Name).MaximumLength(30).NotEmpty();
+        });
     }
 }

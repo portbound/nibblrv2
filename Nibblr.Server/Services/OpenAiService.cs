@@ -56,15 +56,12 @@ public class OpenAiService {
             """
             {
                 "type": "object",
-                "required": ["Name", "Description", "Category", "URL", "Servings", "Calories", "Carbs", "Fat", "Protein", "IngredientsJson", "InstructionsJson"],
+                "required": ["Name", "Description", "URL", "Servings", "Calories", "Carbs", "Fat", "Protein", "IngredientsJson", "InstructionsJson"],
                 "properties": {
                     "Name": {
                       "type": "string"
                     },
                     "Description": {
-                      "type": "string"
-                    },
-                    "Category": {
                       "type": "string"
                     },
                     "URL": {

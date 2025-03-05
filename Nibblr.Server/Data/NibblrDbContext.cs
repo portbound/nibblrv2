@@ -7,6 +7,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
     public DbSet<Recipe> Recipes => Set<Recipe>();
     public DbSet<Instructions> Instructions => Set<Instructions>();
     public DbSet<Ingredients> Ingredients => Set<Ingredients>();
+    public DbSet<Tag> Tags => Set<Tag>();
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Recipe>(entity =>
         {
@@ -17,9 +18,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             entity.Property(e => e.Description);
             entity.Property(e => e.Bookmarked).IsRequired();
             entity.Property(e => e.URL);
-
-            entity.Property(e => e.Category).IsRequired();
-
+            
             entity.Property(e => e.Servings);
             entity.Property(e => e.Calories).IsRequired();
             entity.Property(e => e.Carbs).IsRequired();
@@ -37,6 +36,10 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
                 .HasForeignKey(e => e.RecipeID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.Tags)
+                .WithMany(e => e.Recipes)
+                .UsingEntity(j => j.ToTable("RecipeTags"));        
         });
 
         modelBuilder.Entity<Ingredients>(entity =>
@@ -58,6 +61,15 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
 
             entity.Property(e => e.Step).IsRequired();
             entity.Property(e => e.Body).IsRequired();
+        });
+
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasKey(e => e.ID);
+            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            
+            entity.HasIndex(e => e.Name).IsUnique();
+            entity.Property(e => e.Name).IsRequired();
         });
     }
 }

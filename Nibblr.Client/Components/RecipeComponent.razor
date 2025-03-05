@@ -5,7 +5,7 @@
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveWebAssembly
 
-@if (recipe == null) {
+@if (_recipe == null) {
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 } else {
     <MudPaper Elevation="2" Class="pa-4">
@@ -13,25 +13,27 @@
             <MudItem xs="12">
                 <div class="d-flex justify-space-between align-center">
                     <MudStack Row="true" AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.h3">@recipe.Name</MudText>
+                        <MudText Typo="Typo.h3">@_recipe.Name</MudText>
                         <MudTooltip Text="Edit Recipe">
-                            <MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.EditNote" Color="Color.Info" @onclick="EnableEdit" />
+                            <MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" @onclick="EnableEdit" />
                         </MudTooltip>
                     </MudStack>
-                    <MudTooltip Text="@(recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
+                    <MudTooltip Text="@(_recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
                         <MudIconButton Size="Size.Medium"
                                        Icon="@Icons.Material.Filled.Bookmark"
-                                       Color="@(recipe.Bookmarked ? Color.Warning : Color.Default)"
+                                       Color="@(_recipe.Bookmarked ? Color.Warning : Color.Default)"
                                        @onclick="ToggleBookmark" />
                     </MudTooltip>
                 </div>
                 <MudText Class="mt-2 mb-4" Typo="Typo.subtitle1">
-                    @(!string.IsNullOrEmpty(recipe.Description) ? recipe.Description : "No description available.")
+                    @(!string.IsNullOrEmpty(_recipe.Description) ? _recipe.Description : "No description available.")
                 </MudText>
             </MudItem>
 
             <MudItem xs="12">
-                <MudChip T="string" Color="Color.Tertiary">@recipe.Category</MudChip>
+                @foreach (Tag item in _recipe.Tags) {
+                    <MudChip T="string" Color="Color.Success">@item.Name</MudChip>
+                }
             </MudItem>
             <MudItem xs="12">
                 <MudCard Elevation="0" Outlined="true" Class="mb-4">
@@ -44,25 +46,25 @@
                         <MudGrid>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@recipe.Calories</MudText>
+                                    <MudText Typo="Typo.h5">@_recipe.Calories</MudText>
                                     <MudText Typo="Typo.caption">Calories</MudText>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@recipe.Fat g</MudText>
+                                    <MudText Typo="Typo.h5">@_recipe.Fat g</MudText>
                                     <MudText Typo="Typo.caption">Fats</MudText>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@recipe.Carbs g</MudText>
+                                    <MudText Typo="Typo.h5">@_recipe.Carbs g</MudText>
                                     <MudText Typo="Typo.caption">Carbs</MudText>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@recipe.Protein g</MudText>
+                                    <MudText Typo="Typo.h5">@_recipe.Protein g</MudText>
                                     <MudText Typo="Typo.caption">Protein</MudText>
                                 </MudCard>
                             </MudItem>
@@ -86,7 +88,7 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudList T="Ingredients" Dense="true" ReadOnly="true">
-                            @foreach (Ingredients ingredient in recipe.Ingredients) {
+                            @foreach (Ingredients ingredient in _recipe.Ingredients) {
                                 <MudListItem Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" IconColor="Color.Default">
                                     <div class="d-flex align-center">
                                         <div class="flex-grow-1">
@@ -123,7 +125,7 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudList T="Instructions" Dense="true" ReadOnly="true">
-                            @foreach (Instructions instruction in recipe.Instructions) {
+                            @foreach (Instructions instruction in _recipe.Instructions) {
                                 <MudListItem>
                                     <div class="d-flex">
                                         <MudAvatar Color="Color.Info" Class="mr-3" Size="Size.Medium">@instruction.Step</MudAvatar>
@@ -142,9 +144,9 @@
 }
 
 @code {
-    private Recipe? recipe = new();
-    private Recipe? originalRecipe; // To store the original state for cancel functionality
-    private bool isEditing = false;
+    private Recipe? _recipe = new();
+    private Recipe? _originalRecipe; // To store the original state for cancel functionality
+    private bool _isEditing = false;
 
     [Parameter] public int? ID { get; set; }
     [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
@@ -153,19 +155,18 @@
 
     protected override async Task OnInitializedAsync() {
         if (ExtractedRecipe != null) {
-            recipe = ExtractedRecipe;
+            _recipe = ExtractedRecipe;
         }
 
         if (ID != null) {
-            recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
+            _recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
         }
         
-        if (recipe.ID != null) {
-            await OnRecipeSet.InvokeAsync(recipe.Name);
+        if (_recipe.ID != null) {
+            await OnRecipeSet.InvokeAsync(_recipe.Name);
         } else {
             await OnRecipeSet.InvokeAsync("New Recipe");
         }
-        
     }
 
     private string FormatQuantity(Ingredients ingredient) {
@@ -198,8 +199,8 @@
     }
 
     private async Task ToggleBookmark() {
-        recipe.Bookmarked = !recipe.Bookmarked;
-        await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+        _recipe.Bookmarked = !_recipe.Bookmarked;
+        await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
     }
     
     private async Task EnableEdit() {
