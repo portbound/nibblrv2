@@ -1,5 +1,5 @@
 INSERT INTO "Recipes"
-("ID", "Name", "Description", "URL", "Bookmarked", "Category", "Servings", "Calories", "Fat", "Carbs", "Protein")
+("ID", "Name", "Description", "URL", "Bookmarked", "Servings", "Calories", "Fat", "Carbs", "Protein")
 VALUES
 -- Recipe 1: Classic Spaghetti Bolognese
 (1,
@@ -7,7 +7,6 @@ VALUES
  'A rich and hearty Italian pasta dish with a meaty tomato sauce.',
  'https://www.example.com/spaghetti-bolognese',
  0,
- 'Italian',
  4,
  520,
  18.5,
@@ -20,7 +19,6 @@ VALUES
  'A nutritious breakfast that combines creamy avocado with perfectly poached eggs.',
  'https://www.example.com/avocado-toast',
  1,
- 'Breakfast',
  1,
  320,
  21.3,
@@ -33,7 +31,6 @@ VALUES
  'A flavorful Indian curry dish with tender chicken in a creamy tomato sauce.',
  'https://www.example.com/chicken-tikka-masala',
  0,
- 'Indian',
  2,
  490,
  22.5,
@@ -46,7 +43,6 @@ VALUES
  'Fluffy pancakes studded with juicy blueberries, perfect for a weekend breakfast.',
  'https://www.example.com/blueberry-pancakes',
  1,
- 'Breakfast',
  3,
  380,
  12.4,
@@ -59,7 +55,6 @@ VALUES
  'A nutritious and colorful grain bowl packed with roasted vegetables and protein-rich quinoa.',
  'https://www.example.com/quinoa-bowl',
  0,
- 'Vegetarian',
  1,
  420,
  15.2,
@@ -209,3 +204,31 @@ VALUES
     (5, 7, 'Add sliced avocado and crumbled feta cheese to each bowl.'),
     (5, 8, 'Drizzle with remaining lemon juice and olive oil if desired.'),
     (5, 9, 'Garnish with fresh parsley and serve.');
+
+-- Add tags
+INSERT INTO "Tags" ("ID", "Name")
+VALUES 
+    (1, 'Vegetarian'),
+    (2, 'High Protein'),
+    (3, 'Low Carb'),
+    (4, 'Dessert'),
+    (5, 'Breakfast'),
+    (6, 'Kid Friendly'),
+    (7, 'Side Dish'),
+    (8, 'Gluten Free'),
+    (9, 'Dairy Free'),
+    (10, 'Nut Free'),
+    (11, 'Healthy'),
+    (12, 'Pescatarian'),
+    (13, 'Paleo'),
+    (14, 'Low Fat'),
+    (15, 'Quick & Easy'),
+    (16, 'Sugar Free'),
+    (17, 'Seasonal'),
+    (18, 'Hispanic'),
+    (19, 'Asian'),
+    (20, 'European'),
+    (21, 'Indian'),
+    (22, 'American'),
+    (23, 'African');
+    

@@ -4,7 +4,6 @@ namespace Shared.Contracts.Requests;
 
 public class UpdateRecipeRequest {
     public required string Name { get; set; }
-    public required string Category { get; set; }
     public required string? Description { get; set; }
     public required string? URL { get; set; }
     public required int Servings { get; set; }
@@ -12,6 +11,7 @@ public class UpdateRecipeRequest {
     public required double Fat { get; set; }
     public required double Carbs { get; set; }
     public required double Protein { get; set; }
+    public ICollection<Tags> Tags { get; set; } = [];
     public required ICollection<Ingredients> Ingredients { get; init; } = [];
     public required ICollection<Instructions> Instructions { get; init; } = [];
     public required bool Bookmarked { get; init; } = false;

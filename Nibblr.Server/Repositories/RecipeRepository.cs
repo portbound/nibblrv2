@@ -38,7 +38,6 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
        
        existingRecipe.Name = recipe.Name;
        existingRecipe.Description = recipe.Description;
-       existingRecipe.Category = recipe.Category;
        existingRecipe.URL = recipe.URL;
        existingRecipe.Calories = recipe.Calories;
        existingRecipe.Carbs = recipe.Carbs;
@@ -46,6 +45,7 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
        existingRecipe.Protein = recipe.Protein;
        existingRecipe.Ingredients = recipe.Ingredients;
        existingRecipe.Instructions = recipe.Instructions;
+       existingRecipe.Tags = recipe.Tags;
        existingRecipe.Bookmarked = recipe.Bookmarked;
        
         _dbContext.Update(existingRecipe);

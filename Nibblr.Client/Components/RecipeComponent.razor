@@ -31,7 +31,9 @@
             </MudItem>
 
             <MudItem xs="12">
-                <MudChip T="string" Color="Color.Tertiary">@recipe.Category</MudChip>
+                @foreach (var tag in recipe.Tags) {
+                    <MudChip T="string" Color="Color.Tertiary">@tag</MudChip>
+                }
             </MudItem>
             <MudItem xs="12">
                 <MudCard Elevation="0" Outlined="true" Class="mb-4">

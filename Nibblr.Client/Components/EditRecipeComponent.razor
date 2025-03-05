@@ -14,11 +14,20 @@
                 <div class="d-flex justify-space-between align-center">
                     <MudTextField @bind-Value="recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
                         <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="CancelEdit">Cancel</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Tertiary" @onclick="SaveRecipe">Save</MudButton>
+                        <MudButton Class="ml-2" Variant="Variant.Filled" Color="Color.Tertiary" @onclick="SaveRecipe">Save</MudButton>
                 </div>
                 <MudTextField @bind-Value="recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4"/>
             </MudItem>
 
+            <MudItem xs="12">
+                @foreach (var item in recipe.Tags) {
+                    <MudChip T="string" Color="Color.Tertiary">@item.Name</MudChip>
+                }
+            </MudItem>
+            
+            <MudAutocomplete T="string" Label="Tags" SearchFunc="@AutoComplete" MaxItems="null"
+                             AdornmentIcon="@Icons.Material.Filled.Tag" AdornmentColor="Color.Warning"/>
+            
             <MudItem xs="12">
                 <MudCard Elevation="0" Outlined="true" Class="mb-4">
                     <MudCardHeader>
@@ -139,81 +148,97 @@
 }
 
 
-@code {
-    private Recipe? recipe = new();
-    private bool isEditing = false;
+    @code {
+        private Recipe? recipe = new();
+        private List<Tags>? AllTags = [];
+        private bool isEditing = false;
 
-    [Parameter] public int? ID { get; set; }
-    [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
-    [Parameter] public EventCallback<string> OnRecipeSet { get; set; }
-    [Parameter] public EventCallback<bool> OnToggleIsEditing { get; set; }
+        [Parameter] public int? ID { get; set; }
+        [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
+        [Parameter] public EventCallback<string> OnRecipeSet { get; set; }
+        [Parameter] public EventCallback<bool> OnToggleIsEditing { get; set; }
 
-    protected override async Task OnInitializedAsync() {
-        if (ExtractedRecipe != null) {
-            recipe = ExtractedRecipe;
-        }
+        protected override async Task OnInitializedAsync() {
+            AllTags = await Client.GetFromJsonAsync<List<Tags>>($"api/tags");
 
-        if (ID > 0) {
-            recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
-        }
+            if (ExtractedRecipe != null) {
+                recipe = ExtractedRecipe;
+            }
 
-        if (recipe.ID > 0) {
-            await OnRecipeSet.InvokeAsync(recipe.Name);
-        } else {
-            await OnRecipeSet.InvokeAsync("New Recipe");
-        }
+            if (ID > 0) {
+                recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
+            }
 
-    }
-
-    private void AddNewIngredient() {
-        recipe.Ingredients.Add(new Ingredients {
-            Name = "New Ingredient",
-            Quantity = 1
-        });
-    }
-
-    private void RemoveIngredient(Ingredients ingredient) {
-        recipe.Ingredients.Remove(ingredient);
-    }
-
-    private void AddNewInstruction() {
-        int nextStep = recipe.Instructions.Count + 1;
-        recipe.Instructions.Add(new Instructions {
-            Step = nextStep,
-            Body = "Next step..."
-        });
-    }
-
-    private void RemoveInstruction(Instructions instruction) {
-        recipe.Instructions.Remove(instruction);
-        for (int i = 0; i < recipe.Instructions.Count; i++) {
-            recipe.Instructions.ElementAt(i).Step = i + 1;
-        }
-    }
-
-    private async Task CancelEdit() {
-        await OnToggleIsEditing.InvokeAsync();
-    }
-    
-    private async Task SaveRecipe() {
-        try {
-            HttpResponseMessage response;
             if (recipe.ID > 0) {
-                response = await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+                await OnRecipeSet.InvokeAsync(recipe.Name);
             } else {
-                response = await Client.PostAsJsonAsync($"api/recipes", recipe);
+                await OnRecipeSet.InvokeAsync("New Recipe");
             }
 
-            if (response.IsSuccessStatusCode) {
-                Snackbar.Add("Recipe saved successfully", Severity.Success);
-                isEditing = false;
-            } else {
-                Snackbar.Add("Error saving recipe", Severity.Error);
+        }
+
+        private void RemoveTag(Tags tag) {
+            recipe.Tags.Remove(tag);
+        }
+
+        private void AddNewIngredient() {
+            recipe.Ingredients.Add(new Ingredients {
+                Name = "New Ingredient",
+                Quantity = 1
+            });
+        }
+
+        private void RemoveIngredient(Ingredients ingredient) {
+            recipe.Ingredients.Remove(ingredient);
+        }
+
+        private void AddNewInstruction() {
+            int nextStep = recipe.Instructions.Count + 1;
+            recipe.Instructions.Add(new Instructions {
+                Step = nextStep,
+                Body = "Next step..."
+            });
+        }
+
+        private void RemoveInstruction(Instructions instruction) {
+            recipe.Instructions.Remove(instruction);
+            for (int i = 0; i < recipe.Instructions.Count; i++) {
+                recipe.Instructions.ElementAt(i).Step = i + 1;
             }
-        } catch (Exception ex) {
-            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+
+        private async Task CancelEdit() {
+            await OnToggleIsEditing.InvokeAsync();
+        }
+
+        private async Task SaveRecipe() {
+            try {
+                HttpResponseMessage response;
+                if (recipe.ID > 0) {
+                    response = await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+                } else {
+                    response = await Client.PostAsJsonAsync($"api/recipes", recipe);
+                }
+
+                if (response.IsSuccessStatusCode) {
+                    Snackbar.Add("Recipe saved successfully", Severity.Success);
+                    isEditing = false;
+                } else {
+                    Snackbar.Add("Error saving recipe", Severity.Error);
+                }
+            }
+            catch (Exception ex) {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
+
+        private async Task<IEnumerable<string>>? AutoComplete(string? value, CancellationToken cancellationToken) {
+            IEnumerable<string> tagNames = AllTags.Select(x => x.Name);
+            if (string.IsNullOrEmpty(value)) {
+                return tagNames;
+            }
+            tagNames = tagNames.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return tagNames;
         }
     }
-    
-    // Figure out what we want to do with categories. Using an enum as placeholder for now.
 }
