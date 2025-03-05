@@ -12,10 +12,9 @@
         <MudGrid>
             <MudItem xs="12">
                 <div class="d-flex justify-space-between align-center">
-                    <MudTextField @bind-Value="recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2"/>
-                    <MudTooltip Text="Cancel Edit">
+                    <MudTextField @bind-Value="recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
                         <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="CancelEdit">Cancel</MudButton>
-                    </MudTooltip>
+                        <MudButton Variant="Variant.Filled" Color="Color.Tertiary" @onclick="SaveRecipe">Save</MudButton>
                 </div>
                 <MudTextField @bind-Value="recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4"/>
             </MudItem>
@@ -29,6 +28,11 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudGrid>
+                            <MudItem xs="3">
+                                <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
+                                    <MudNumericField @bind-Value="recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
+                                </MudCard>
+                            </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
                                     <MudNumericField @bind-Value="recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
@@ -149,11 +153,11 @@
             recipe = ExtractedRecipe;
         }
 
-        if (ID != null) {
+        if (ID > 0) {
             recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
         }
 
-        if (recipe.ID != null) {
+        if (recipe.ID > 0) {
             await OnRecipeSet.InvokeAsync(recipe.Name);
         } else {
             await OnRecipeSet.InvokeAsync("New Recipe");
@@ -193,7 +197,12 @@
     
     private async Task SaveRecipe() {
         try {
-            HttpResponseMessage response = await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+            HttpResponseMessage response;
+            if (recipe.ID > 0) {
+                response = await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+            } else {
+                response = await Client.PostAsJsonAsync($"api/recipes", recipe);
+            }
 
             if (response.IsSuccessStatusCode) {
                 Snackbar.Add("Recipe saved successfully", Severity.Success);
@@ -205,4 +214,6 @@
             Snackbar.Add($"Error: {ex.Message}", Severity.Error);
         }
     }
+    
+    // Figure out what we want to do with categories. Using an enum as placeholder for now.
 }

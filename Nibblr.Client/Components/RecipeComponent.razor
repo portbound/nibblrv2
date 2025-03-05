@@ -31,6 +31,9 @@
             </MudItem>
 
             <MudItem xs="12">
+                <MudChip T="string" Color="Color.Tertiary">@recipe.Category</MudChip>
+            </MudItem>
+            <MudItem xs="12">
                 <MudCard Elevation="0" Outlined="true" Class="mb-4">
                     <MudCardHeader>
                         <CardHeaderContent>
@@ -84,10 +87,10 @@
                     <MudCardContent>
                         <MudList T="Ingredients" Dense="true" ReadOnly="true">
                             @foreach (Ingredients ingredient in recipe.Ingredients) {
-                                <MudListItem >
+                                <MudListItem Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" IconColor="Color.Default">
                                     <div class="d-flex align-center">
                                         <div class="flex-grow-1">
-                                            <MudIcon Icon="@Icons.Material.Outlined.CheckBoxOutlineBlank"/>
+                                            
                                             <MudText>
                                                 <b>@FormatQuantity(ingredient)</b> @ingredient.Name
                                             </MudText>
@@ -194,8 +197,9 @@
         // Implement shopping list functionality
     }
 
-    private void ToggleBookmark() {
+    private async Task ToggleBookmark() {
         recipe.Bookmarked = !recipe.Bookmarked;
+        await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
     }
     
     private async Task EnableEdit() {

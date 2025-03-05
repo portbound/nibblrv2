@@ -1,23 +1,30 @@
 @page "/CreateRecipe"
-<h3>CreateRecipe</h3>
 
-@* Render grid with two options to click, either generate from AI or from scratch then conditionally show/hide the manual template for entry or provide *@
-<MudGrid Spacing="@Spacing" Justify="Justify.Center">
-    <MudItem>
-        <MudPaper Outlined="true" Elevation="3" Height="300px" Width="300px">
-            <MudIconButton Icon="@Icons.Material.Filled.Cookie" Size="Size.Large" />
-            Use Nibblr
-        </MudPaper>
-    </MudItem>
-    <MudItem>
-        <MudPaper Outlined="true" Elevation="3" Height="140px" Width="140px">
-            <MudIcon Icon="@Icons.Material.Filled.MenuBook" Size="Size.Large" />
-            Create one myself
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+@using Shared.Models
+@inject HttpClient Client
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Client.Components
+@rendermode InteractiveWebAssembly
+
+<MudBreadcrumbs Items="Crumbs"></MudBreadcrumbs>
+
+<EditRecipeComponent OnToggleIsEditing="ToggleIsEditing"/> 
 
 @code {
-    public int Spacing { get; set; } = 6;
-    public bool Type { get; set; }
+    private List<BreadcrumbItem> Crumbs = [];
+    private string RecipeName = string.Empty;
+    private bool IsEditing = false;
+    
+    protected void RecipeSet(string name) {
+        RecipeName = "New Recipe";
+        Crumbs = [        
+            new BreadcrumbItem("Home", href: "#"),
+            new BreadcrumbItem("Recipes", href: "#"),
+            new BreadcrumbItem(RecipeName, href: null, disabled: true)
+        ];
+    }
+
+    private void ToggleIsEditing() {
+        IsEditing = !IsEditing;
+    }
 }
