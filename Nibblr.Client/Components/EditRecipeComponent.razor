@@ -53,6 +53,15 @@
             </MudItem>
             
             <MudItem xs="12">
+                @foreach (var item in recipe.Tags) {
+                    <MudChip T="string" Color="Color.Tertiary">@item.Name</MudChip>
+                }
+            </MudItem>
+            
+            <MudAutocomplete T="string" Label="Tags" SearchFunc="@AutoComplete" MaxItems="null"
+                             AdornmentIcon="@Icons.Material.Filled.Tag" AdornmentColor="Color.Warning"/>
+            
+            <MudItem xs="12">
                 <MudCard Elevation="0" Outlined="true" Class="mb-4">
                     <MudCardHeader>
                         <CardHeaderContent>

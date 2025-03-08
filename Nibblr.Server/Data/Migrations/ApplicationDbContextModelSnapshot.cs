@@ -179,11 +179,20 @@ namespace Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Shared.Models.Tags", b =>
+                {
+                    b.HasOne("Shared.Models.Recipe", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("RecipeID");
+                });
+
             modelBuilder.Entity("Shared.Models.Recipe", b =>
                 {
                     b.Navigation("Ingredients");
 
                     b.Navigation("Instructions");
+
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

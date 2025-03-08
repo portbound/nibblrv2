@@ -10,7 +10,7 @@ public class Recipe {
     public double Fat { get; set; }
     public double Carbs { get; set; }
     public double Protein { get; set; }
-    public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+    public ICollection<Tag> Tags { get; set; } = [];
     public ICollection<Ingredients> Ingredients { get; set; } = [];
     public ICollection<Instructions> Instructions { get; set; } = [];
     
