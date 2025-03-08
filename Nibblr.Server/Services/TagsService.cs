@@ -5,7 +5,7 @@ using Shared.Models;
 namespace Server.Services;
 
 public class TagsService(ITagsRepository _tagsRepository) : ITagsService {
-    public async Task<IEnumerable<Tags>> GetAllAsync() {
+    public async Task<IEnumerable<Tag>> GetAllAsync() {
         return await _tagsRepository.GetAllAsync();
     }
 }

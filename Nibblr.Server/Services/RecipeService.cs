@@ -2,16 +2,18 @@ using FluentValidation;
 using Server.Mapping;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
+using Server.Validators;
 using Shared.Contracts.Requests;
 using Shared.Contracts.Responses;
 using Shared.Models;
 
 namespace Server.Services;
 
-public class RecipeService(IRecipeRepository _recipeRepository, AbstractValidator<Recipe> validator) : IRecipeService {
+public class RecipeService(IRecipeRepository _recipeRepository, ITagsService _tagsService, AbstractValidator<Recipe> validator) : IRecipeService {
     
     public async Task<(bool status, Recipe recipe)> CreateAsync(CreateRecipeRequest request) {
-        Recipe recipe = request.MapToRecipe(); 
+        IEnumerable<Tag> tags = await _tagsService.GetAllAsync();
+        Recipe recipe = request.MapToRecipe(tags); 
         await validator.ValidateAndThrowAsync(recipe);
         var status = await _recipeRepository.CreateAsync(recipe);
         return (status, recipe);
@@ -30,7 +32,8 @@ public class RecipeService(IRecipeRepository _recipeRepository, AbstractValidato
     }
     
     public async Task<bool> UpdateAsync(int id, UpdateRecipeRequest request) {
-        Recipe recipe = request.MapToRecipe(id);
+        IEnumerable<Tag> tags = await _tagsService.GetAllAsync();
+        Recipe recipe = await request.MapToRecipe(id, tags);
         await validator.ValidateAndThrowAsync(recipe);
         return await _recipeRepository.UpdateAsync(recipe);
     }

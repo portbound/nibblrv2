@@ -4,5 +4,5 @@ using Shared.Models;
 namespace Server.Services.Interfaces;
 
 public interface ITagsService {
-    public Task<IEnumerable<Tags>> GetAllAsync();
+    public Task<IEnumerable<Tag>> GetAllAsync();
 }

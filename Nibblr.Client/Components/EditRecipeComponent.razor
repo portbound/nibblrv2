@@ -5,20 +5,53 @@
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveWebAssembly
 
-@if (recipe == null) {
+@if (_recipe == null) {
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 } else {
     <MudPaper Elevation="2" Class="pa-4">
         <MudGrid>
             <MudItem xs="12">
                 <div class="d-flex justify-space-between align-center">
-                    <MudTextField @bind-Value="recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="CancelEdit">Cancel</MudButton>
+                    <MudTextField @bind-Value="_recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="CancelEdit">Back</MudButton>
                         <MudButton Class="ml-2" Variant="Variant.Filled" Color="Color.Tertiary" @onclick="SaveRecipe">Save</MudButton>
                 </div>
-                <MudTextField @bind-Value="recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4"/>
+                <MudTextField @bind-Value="_recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4"/>
             </MudItem>
-
+            
+            <MudItem xs="12">
+                <MudText Typo="Typo.subtitle1" Class="mb-2">Tags</MudText>
+                <MudPaper Elevation="0" Class="d-flex flex-wrap gap-2 py-2">
+                    @foreach (Tag item in _recipe.Tags) {
+                        <MudChip T="string"
+                                 Color="Color.Tertiary"
+                                 OnClose="() => RemoveTag(item)"
+                                 Size="Size.Small"
+                                 Label="true">@item.Name</MudChip>
+                    }
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12">
+                <div class="d-flex gap-2">
+                    <MudAutocomplete T="string"
+                                     Label="Add a tag"
+                                     SearchFunc="@AutoComplete"
+                                     MaxItems="null"
+                                     @bind-Value="_tagName"
+                                     Variant="Variant.Outlined"
+                                     Placeholder="Type a tag name"
+                                     Class="flex-grow-1"
+                                      />
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Medium"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               Class="align-self-center"
+                               Disabled="@string.IsNullOrWhiteSpace(_tagName)"
+                               @onclick="() => AddTag(_tagName)">Add Tag</MudButton>
+                </div>
+            </MudItem>
+            
             <MudItem xs="12">
                 @foreach (var item in recipe.Tags) {
                     <MudChip T="string" Color="Color.Tertiary">@item.Name</MudChip>
@@ -39,27 +72,27 @@
                         <MudGrid>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
+                                    <MudNumericField @bind-Value="_recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
+                                    <MudNumericField @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
+                                    <MudNumericField @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
+                                    <MudNumericField @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
                                 </MudCard>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudCard Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
+                                    <MudNumericField @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
                                 </MudCard>
                             </MudItem>
                         </MudGrid>
@@ -76,7 +109,7 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudList T="Ingredients" Dense="true" ReadOnly="true">
-                            @foreach (Ingredients ingredient in recipe.Ingredients) {
+                            @foreach (Ingredients ingredient in _recipe.Ingredients) {
                                 <MudListItem >
                                     <MudStack Row="true" Class="flex-grow-1 align-center">
                                         <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Label="Ingredient"/>
@@ -115,7 +148,7 @@
                     </MudCardHeader>
                     <MudCardContent>
                         <MudList T="Instructions" Dense="true" ReadOnly="true">
-                            @foreach (Instructions instruction in recipe.Instructions) {
+                            @foreach (Instructions instruction in _recipe.Instructions) {
                                 <MudListItem>
                                     <div class="d-flex mb-2">
                                         <MudAvatar Class="mr-3 align-self-center" 
@@ -145,13 +178,12 @@
             </MudItem>
         </MudGrid>
     </MudPaper>
-}
-
 
     @code {
-        private Recipe? recipe = new();
-        private List<Tags>? AllTags = [];
-        private bool isEditing = false;
+        private Recipe? _recipe = new();
+        private List<Tag>? _allTags = [];
+        private string? _tagName; 
+        private bool _isEditing = false;
 
         [Parameter] public int? ID { get; set; }
         [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
@@ -159,51 +191,59 @@
         [Parameter] public EventCallback<bool> OnToggleIsEditing { get; set; }
 
         protected override async Task OnInitializedAsync() {
-            AllTags = await Client.GetFromJsonAsync<List<Tags>>($"api/tags");
+            _allTags = await Client.GetFromJsonAsync<List<Tag>>($"api/tags");
 
             if (ExtractedRecipe != null) {
-                recipe = ExtractedRecipe;
+                _recipe = ExtractedRecipe;
             }
 
             if (ID > 0) {
-                recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
+                _recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
             }
 
-            if (recipe.ID > 0) {
-                await OnRecipeSet.InvokeAsync(recipe.Name);
+            if (_recipe.ID > 0) {
+                await OnRecipeSet.InvokeAsync(_recipe.Name);
             } else {
                 await OnRecipeSet.InvokeAsync("New Recipe");
             }
 
         }
 
-        private void RemoveTag(Tags tag) {
-            recipe.Tags.Remove(tag);
+        private void AddTag(string tagName) {
+            if (string.IsNullOrWhiteSpace(tagName)) {
+                return;
+            }
+            _recipe.Tags.Add(_allTags.FirstOrDefault(x => x.Name == tagName));
+            _tagName = string.Empty; 
+        }
+
+        private void RemoveTag(Tag tag) {
+            _recipe.Tags.Remove(tag);
         }
 
         private void AddNewIngredient() {
-            recipe.Ingredients.Add(new Ingredients {
+            _recipe.Ingredients.Add(new Ingredients {
                 Name = "New Ingredient",
                 Quantity = 1
             });
         }
 
         private void RemoveIngredient(Ingredients ingredient) {
-            recipe.Ingredients.Remove(ingredient);
+            _recipe.Ingredients.Remove(ingredient);
         }
 
         private void AddNewInstruction() {
-            int nextStep = recipe.Instructions.Count + 1;
-            recipe.Instructions.Add(new Instructions {
+            int nextStep = _recipe.Instructions.Count + 1;
+            _recipe.Instructions.Add(new Instructions {
                 Step = nextStep,
                 Body = "Next step..."
             });
         }
 
         private void RemoveInstruction(Instructions instruction) {
-            recipe.Instructions.Remove(instruction);
-            for (int i = 0; i < recipe.Instructions.Count; i++) {
-                recipe.Instructions.ElementAt(i).Step = i + 1;
+            _recipe.Instructions.Remove(instruction);
+            for (int i = 0; i < _recipe.Instructions.Count; i++) {
+                _recipe.Instructions.ElementAt(i).Step = i + 1;
             }
         }
 
@@ -214,15 +254,15 @@
         private async Task SaveRecipe() {
             try {
                 HttpResponseMessage response;
-                if (recipe.ID > 0) {
-                    response = await Client.PutAsJsonAsync($"api/recipes/{ID}", recipe);
+                if (_recipe.ID > 0) {
+                    response = await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
                 } else {
-                    response = await Client.PostAsJsonAsync($"api/recipes", recipe);
+                    response = await Client.PostAsJsonAsync($"api/recipes", _recipe);
                 }
 
                 if (response.IsSuccessStatusCode) {
                     Snackbar.Add("Recipe saved successfully", Severity.Success);
-                    isEditing = false;
+                    _isEditing = false;
                 } else {
                     Snackbar.Add("Error saving recipe", Severity.Error);
                 }
@@ -233,7 +273,7 @@
         }
 
         private async Task<IEnumerable<string>>? AutoComplete(string? value, CancellationToken cancellationToken) {
-            IEnumerable<string> tagNames = AllTags.Select(x => x.Name);
+            IEnumerable<string> tagNames = _allTags.Select(x => x.Name);
             if (string.IsNullOrEmpty(value)) {
                 return tagNames;
             }

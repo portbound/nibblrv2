@@ -16,13 +16,15 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
         return await _dbContext.Recipes
             .Include(r => r.Ingredients)
             .Include(r => r.Instructions)
+            .Include(r => r.Tags)
             .FirstOrDefaultAsync(x => x.ID == id);
     }
     
     public async Task<IEnumerable<Recipe>> GetAllAsync() {
         return await _dbContext.Recipes
             .Include(r => r.Ingredients)
-            .Include(r => r.Instructions)
+            .Include(r => r.Instructions)            
+            .Include(r => r.Tags)
             .ToListAsync();
     }
     
@@ -30,6 +32,7 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
        Recipe? existingRecipe = await _dbContext.Recipes
            .Include(r => r.Ingredients)
            .Include(r => r.Instructions)
+           .Include(r => r.Tags)
            .FirstOrDefaultAsync(x => x.ID == recipe.ID);
 
        if (existingRecipe == null) {
@@ -47,10 +50,9 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
        existingRecipe.Instructions = recipe.Instructions;
        existingRecipe.Tags = recipe.Tags;
        existingRecipe.Bookmarked = recipe.Bookmarked;
-       
-        _dbContext.Update(existingRecipe);
-        await _dbContext.SaveChangesAsync(); 
-        return await Task.FromResult(true);
+       _dbContext.Update(existingRecipe);
+       await _dbContext.SaveChangesAsync(); 
+       return await Task.FromResult(true);
     }
     
     public async Task<bool> DeleteAsync(int id) {

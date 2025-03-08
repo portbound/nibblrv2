@@ -4,5 +4,5 @@ using Shared.Models;
 namespace Server.Repositories.Interfaces;
 
 public interface ITagsRepository {
-    Task<IEnumerable<Tags>> GetAllAsync();
+    Task<IEnumerable<Tag>> GetAllAsync();
 }

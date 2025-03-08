@@ -11,7 +11,7 @@ public class TagsController(ITagsService _tagsService) : ControllerBase {
     
     [HttpGet(ApiEndpoints.Tags.GetAll)]
     public async Task<IActionResult> GetAll() {
-        IEnumerable<Tags> tags = await _tagsService.GetAllAsync();
+        IEnumerable<Tag> tags = await _tagsService.GetAllAsync();
         return Ok(tags);
     }
 }

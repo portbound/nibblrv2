@@ -11,7 +11,7 @@ public class CreateRecipeRequest {
     public required double Fat { get; set; }
     public required double Carbs { get; set; }
     public required double Protein { get; set; }
-    public ICollection<Tags> Tags { get; set; } = [];
+    public ICollection<Tag> Tags { get; set; } = [];
     public required ICollection<Ingredients> Ingredients { get; set; } = [];
     public required ICollection<Instructions> Instructions { get; set; } = [];
     public required bool Bookmarked { get; set; } = false;

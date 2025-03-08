@@ -1,6 +1,7 @@
 @page "/ExtractRecipe"
 @inject HttpClient Client
 @inject NavigationManager Navigation
+@inject ISnackbar Snackbar
 @using System.Web
 @using Shared.Models
 
@@ -33,6 +34,10 @@
     [Parameter] public string Url { get; set; }
 
     private async Task ExtractRecipeAsync(string url) {
+        if (string.IsNullOrWhiteSpace(url)) {
+            Snackbar.Add("URL is required", Severity.Error);
+            return;
+        }
         IsLoading = true;
         var encodedURI = HttpUtility.UrlEncode(Url);
         ExtractedRecipe = await Client.GetFromJsonAsync<Recipe>($"/api/AI/extract?url={encodedURI}");
