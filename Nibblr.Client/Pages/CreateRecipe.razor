@@ -11,18 +11,13 @@
 <EditRecipeComponent OnToggleIsEditing="ToggleIsEditing"/> 
 
 @code {
-    private List<BreadcrumbItem> Crumbs = [];
-    private string RecipeName = string.Empty;
-    private bool IsEditing = false;
+    private readonly List<BreadcrumbItem> Crumbs = [
+        new BreadcrumbItem("Home", href: "#"),
+        new BreadcrumbItem("Recipes", href: "#"),
+        new BreadcrumbItem("New Recipe", href: null, disabled: true)
+    ];
     
-    protected void RecipeSet(string name) {
-        RecipeName = "New Recipe";
-        Crumbs = [        
-            new BreadcrumbItem("Home", href: "#"),
-            new BreadcrumbItem("Recipes", href: "#"),
-            new BreadcrumbItem(RecipeName, href: null, disabled: true)
-        ];
-    }
+    private bool IsEditing = false;
 
     private void ToggleIsEditing() {
         IsEditing = !IsEditing;

@@ -7,19 +7,16 @@
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
 
-<MudGrid Class="mb-5">
-    <MudItem xs="11">
-        <MudPaper>
-            <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="1" Class="align-self-center">
-        <MudFab Size="Size.Medium" StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" OnClick="() => ExtractRecipeAsync(Url)"/>
-    </MudItem>
-</MudGrid>
+<MudStack Row="true" AlignItems="AlignItems.Center">
+        <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
+        <MudButton Class="ml-2" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Search" @onclick="() => ExtractRecipeAsync(Url)">Search</MudButton>
+</MudStack>
 
 @if (IsLoading) {
-    <MudProgressLinear Color="Color.Tertiary" Indeterminate="true" Class="my-7" />
+    <div class="d-flex justify-space-between align-center">
+        <MudImage Src="Nibblr.jpeg" Alt="Nibblr"/>
+        <MudProgressLinear Color="Color.Tertiary" Indeterminate="true" Class="my-7"/>
+    </div>
 }
 
 @code {

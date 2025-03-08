@@ -12,7 +12,7 @@ public class UpdateRecipeRequest {
     public required double Carbs { get; set; }
     public required double Protein { get; set; }
     public ICollection<Tag> Tags { get; set; } = [];
-    public required ICollection<Ingredients> Ingredients { get; init; } = [];
-    public required ICollection<Instructions> Instructions { get; init; } = [];
-    public required bool Bookmarked { get; init; } = false;
+    public required ICollection<Ingredients> Ingredients { get; set; } = [];
+    public required ICollection<Instructions> Instructions { get; set; } = [];
+    public required bool Bookmarked { get; set; } = false;
 }
