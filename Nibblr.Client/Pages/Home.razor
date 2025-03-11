@@ -1,77 +1,41 @@
 ﻿@page "/"
 @inject HttpClient Client
 @inject NavigationManager Navigation
-@using Shared.Models
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
-@using MudBlazor
 @using Shared.Contracts.Responses
 @rendermode InteractiveWebAssembly
 
 @if (!_recipes.Any()) {
     <div>Loading...</div>
 } else {
-    <MudTable Items="_recipes" Dense="true" Class="pt-5">
-        <ToolBarContent><MudText Typo="Typo.h6">Recipe Book</MudText>
-            <MudSpacer />
-            <MudTextField @bind-Value="FilterText" Placeholder="Filter" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh></MudTh>
-            <MudTh>Name</MudTh>
-            <MudTh>Description</MudTh>
-            <MudTh>Calories</MudTh>
-            <MudTh></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Bookmarked">
-                @(context.Bookmarked ? @<MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="Color.Warning"/> : null)             
-            </MudTd>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Description">@context.Description</MudTd>
-            <MudTd DataLabel="Calories">@context.Calories</MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.FileOpen" Color="Color.Info" @onclick="() => NavigateToRecipeView(context.ID)" />
-            </MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
-    
-    
-    @* <MudSimpleTable Elevation="23" Class="nbshad"> *@
-    @*     <thead> *@
-    @*     <tr> *@
-    @*         <td></td> *@
-    @*         <th>Name</th> *@
-    @*         <th>Description</th> *@
-    @*         <th>Calories</th> *@
-    @*         <th></th> *@
-    @*     </tr> *@
-    @*     </thead> *@
-    @*     <tbody> *@
-    @*     @foreach (RecipeResponse item in _recipes) { *@
-    @*         <tr class="spacing"> *@
-    @*             <td> *@
-    @*                 @(item.Bookmarked ? @<MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="Color.Warning"/> : null) *@
-    @*             </td> *@
-    @*             <td>@item.Name</td> *@
-    @*             <td>@item.Description</td> *@
-    @*             <td>@item.Calories</td> *@
-    @*             <td> *@
-    @*                 <button class="neobrutalism-btn" @onclick="() => NavigateToRecipeView(item.ID)"> *@
-    @*                     <MudIcon Icon="@Icons.Material.Filled.Edit"/> *@
-    @*                 </button> *@
-    @*             </td> *@
-    @*         </tr> *@
-    @*     } *@
-    @*     </tbody> *@
-    @* </MudSimpleTable> *@
+    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-2"></MudTextField>
+    <MudGrid Class="mt-2">
+        @foreach (RecipeResponse recipe in _recipes) {
+            <MudItem xs="12" md="4" lg="3" xl="2">
+                <MudCard Class="ma-2" Elevation="10">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@recipe.Name</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle2">@recipe.Description</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="@(recipe.Bookmarked ? Color.Warning : Color.Transparent)"/>
+                        <MudSpacer/>
+                        <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Color="Color.Info" @onclick="() => NavigateToRecipeView(recipe.ID)"/>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
 }
 
 @code {
     List<RecipeResponse>? _recipes = [];
-    public string FilterText { get; set; } = string.Empty;
+    private string _searchString;
 
 
     protected override async Task OnInitializedAsync() {

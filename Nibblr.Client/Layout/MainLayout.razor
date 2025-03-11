@@ -24,10 +24,13 @@
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent Class="custom-background">
-        <MudContainer>
+        <MudContainer Fixed="true">
             @Body
         </MudContainer>
     </MudMainContent>
+    <MudScrollToTop>
+        <MudFab Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.ArrowUpward" />
+    </MudScrollToTop>
 </MudLayout>
 
 @code {

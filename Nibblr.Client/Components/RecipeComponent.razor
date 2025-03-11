@@ -11,15 +11,15 @@
     <MudPaper Elevation="2" Class="pa-4">
         <MudGrid>
             <MudItem xs="12">
-                <div class="d-flex justify-space-between align-center">
                     <MudStack Row="true">
-                        <MudText Typo="Typo.h3">@_recipe.Name</MudText>
-                        <MudSpacer />
+                        <MudPaper Elevation="0">
+                            <MudText Typo="Typo.h3">@_recipe.Name</MudText>
+                        </MudPaper>
+                        <MudSpacer/>
                         <MudTooltip Text="Edit Recipe">
-                            <MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.EditNote" Color="Color.Default" @onclick="EnableEdit" />
+                            <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Filled.Edit" Color="Color.Info" @onclick="EnableEdit"/>
                         </MudTooltip>
                     </MudStack>
-                </div>
                 <MudText Class="mt-2 mb-4" Typo="Typo.subtitle1">
                     @(!string.IsNullOrEmpty(_recipe.Description) ? _recipe.Description : "No description available.")
                 </MudText>
@@ -28,8 +28,12 @@
             <MudItem xs="12" Class="pt-0">
                 <MudStack Row="true" AlignItems="AlignItems.Center">
                     <MudPaper Elevation="0">
-                        @foreach (Tag item in _recipe.Tags) {
-                            <MudChip T="string" Color="Color.Success">@item.Name</MudChip>
+                        @if (_recipe.Tags.Count == 0) {
+                            <MudChip T="string" Color="Color.Info" OnClick="EnableEdit">Add Tag</MudChip>
+                        } else {
+                            @foreach (Tag item in _recipe.Tags) {
+                                <MudChip T="string" Color="Color.Success">@item.Name</MudChip>
+                            }
                         }
                     </MudPaper>
                     <MudSpacer />

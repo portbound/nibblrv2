@@ -25,7 +25,6 @@
     protected void RecipeSet(string name) {
         RecipeName = name;
         Crumbs = [        
-            new BreadcrumbItem("Home", href: "#"),
             new BreadcrumbItem("Recipes", href: "#"),
             new BreadcrumbItem(RecipeName, href: null, disabled: true)
         ];

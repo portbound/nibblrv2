@@ -22,11 +22,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\lib\" />
+      <Compile Include="wwwroot\css\Themes\Main.cs" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="wwwroot\css\Themes\Main.cs" />
+      <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
     </ItemGroup>
 
 </Project>
