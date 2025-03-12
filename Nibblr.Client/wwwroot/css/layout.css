@@ -8,8 +8,8 @@
     height: auto; /* Allows content to expand beyond viewport */
     padding-bottom: 2rem; /* Optional: adds some space at the bottom */}
 
-.spacing {
-    margin: 5px;
+.nibblr-icon {
+    max-width: 60px !important; 
 }
 
 /*@media (max-width: 600px) {*/

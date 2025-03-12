@@ -7,21 +7,25 @@
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
 
-<MudStack Row="true" AlignItems="AlignItems.Center">
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="10">
         <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
+    </MudItem>
+    <MudItem lg="2" Class="align-self-center">
         <MudButton Class="ml-2" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Search" @onclick="() => ExtractRecipeAsync(Url)">Search</MudButton>
-</MudStack>
+    </MudItem>
+</MudGrid>
 
-@if (IsLoading) {
+@* @if (IsLoading) { *@
     <div class="d-flex justify-space-between align-center">
-        <MudImage Src="Nibblr.jpeg" Alt="Nibblr"/>
-        <MudProgressLinear Color="Color.Tertiary" Indeterminate="true" Class="my-7"/>
+        <MudImage Fluid="true" Src="NibblrTP250p.png" Alt="Nibblr"/>
+        <MudProgressCircular Color="Color.Warning" Rounded="true" Size="Size.Large" StrokeWidth="4" Indeterminate="true" Class="my-7"/>
     </div>
-}
+@* } *@
 
 @code {
     private readonly List<BreadcrumbItem> crumbs = [
-        new BreadcrumbItem("Home", href: "#"),
+        new BreadcrumbItem("Recipes", href: "#"),
         new BreadcrumbItem("Extract Recipe", href: null, disabled: true),
     ];
 
