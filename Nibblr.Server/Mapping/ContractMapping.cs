@@ -31,7 +31,7 @@ public static class ContractMapping {
                 Step = x.Step,
                 Body = x.Body,
             }).ToList(),
-            Tags = sortedTags,
+            Tags = sortedTags.OrderByDescending(x => x.Name).ToList(),
             Servings = request.Servings,
             Calories = request.Calories,
             Carbs = request.Carbs,
@@ -71,7 +71,7 @@ public static class ContractMapping {
             Carbs = recipe.Carbs,
             Fat = recipe.Fat,
             Protein = recipe.Protein,
-            Bookmarked = false,
+            Bookmarked = recipe.Bookmarked,
         };
     }
 
@@ -106,7 +106,7 @@ public static class ContractMapping {
                 Step = x.Step,
                 Body = x.Body,
             }).ToList(),
-            Tags = sortedTags,
+            Tags = sortedTags.OrderBy(t => t.Name).ToList(),
             Servings = request.Servings,
             Calories = request.Calories,
             Carbs = request.Carbs,

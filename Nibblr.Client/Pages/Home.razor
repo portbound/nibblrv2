@@ -1,52 +1,67 @@
 ﻿@page "/"
 @inject HttpClient Client
 @inject NavigationManager Navigation
-@using Shared.Models
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
-@using MudBlazor
 @using Shared.Contracts.Responses
+@using Client.Components
 @rendermode InteractiveWebAssembly
 
-<MudPaper Elevation="23"></MudPaper>
-
-@if (!recipes.Items.Any()) {
-    <div>Loading...</div>
+@if (!_recipes.Any()) {
+    <LoaderComponent Message="Loading Recipes..."/>
 } else {
-    <MudSimpleTable Elevation="23" Class="nbshad">
-        <thead>
-        <tr>
-            <th>Category</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Calories</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in recipes.Items) {
-            <tr class="spacing">
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td>@item.Calories</td>
-                <td>
-                    <button class="neobrutalism-btn" @onclick="() => NavigateToRecipeView(item.ID)">
-                        <MudIcon Icon="@Icons.Material.Filled.Edit"/>
-                    </button>
-                </td>
-            </tr>
+    @* <MudContainer Class="d-flex justify-center"> *@
+    <MudContainer Class="d-none d-sm-flex justify-center">
+        <MudImage Src="Nibblr-250px.png" Width="250" Alt="Nibblr" />
+    </MudContainer>
+    
+    @* <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs> *@
+
+    <MudTextField @bind-Value="_searchString" TextChanged="FilterRecipes" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Default" Placeholder="Search Recipes or Tags" Variant="Variant.Outlined" Class="mt-2 search-field"></MudTextField>
+    <MudGrid Class="mt-2">
+        @foreach (RecipeResponse recipe in _filteredRecipes) {
+            <MudItem xs="12" md="4" lg="3" xl="2">
+                <MudCard Class="ma-2" Elevation="0" Outlined="true">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">@recipe.Name</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle2">@recipe.Description</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="@(recipe.Bookmarked ? Color.Error : Color.Transparent)"/>
+                        <MudSpacer/>
+                        <MudIconButton Icon="@Icons.Material.Outlined.ArrowCircleRight" Color="Color.Info" @onclick="() => NavigateToRecipeView(recipe.ID)"/>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
         }
-        </tbody>
-    </MudSimpleTable>
+    </MudGrid>
 }
 
 @code {
-    RecipesResponse recipes = new();
-    
+    List<RecipeResponse>? _recipes = [];
+    List<RecipeResponse>? _filteredRecipes = [];
+    private string _searchString;
+
+    private readonly List<BreadcrumbItem> crumbs = [
+        new BreadcrumbItem("Recipes", href: null, disabled: true),
+    ];
+
     protected override async Task OnInitializedAsync() {
-        recipes = await Client.GetFromJsonAsync<RecipesResponse>("/api/recipes");
+        RecipesResponse response = await Client.GetFromJsonAsync<RecipesResponse>("/api/recipes");
+        _recipes = response.Items.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name).ToList();
+        _filteredRecipes = _recipes;
     }
 
     private void NavigateToRecipeView(int id) {
         Navigation.NavigateTo($"RecipeView/{id}");    
+    }
+
+    private void FilterRecipes() {
+        _filteredRecipes = string.IsNullOrWhiteSpace(_searchString)
+            ? _recipes
+            : _recipes.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase) || x.Tags.Any(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))).ToList();
     }
 }

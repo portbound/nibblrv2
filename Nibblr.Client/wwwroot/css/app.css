@@ -113,3 +113,11 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+@media (max-width: 600px) {
+    .mud-container {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        padding-top: 8px !important;
+    }
+}

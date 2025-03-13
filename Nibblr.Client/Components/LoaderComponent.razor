@@ -1,0 +1,15 @@
+<MudGrid Justify="Justify.Center">
+    <MudItem>
+        <MudImage Src="Nibblr-250px.png" Width="250" Alt="Nibblr" />
+    </MudItem>
+    <MudItem xs="12" Class="pt-0">
+        <MudStack Row="true" Justify="Justify.Center">
+            <MudProgressCircular Color="Color.Info" Size="Size.Small" Indeterminate="true"/>
+            <MudText>@Message</MudText>
+        </MudStack>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter] public string Message { get; set; }
+}

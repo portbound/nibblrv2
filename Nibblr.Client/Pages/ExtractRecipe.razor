@@ -3,28 +3,27 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @using System.Web
+@using Client.Components
 @using Shared.Models
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
 
-<MudGrid Class="mb-5">
-    <MudItem xs="11">
-        <MudPaper>
-            <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
-        </MudPaper>
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="10">
+        <MudTextField Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Link" AdornmentColor="Color.Default" @bind-Value="Url" Class="search-field" Placeholder="Link to Recipe"/>
     </MudItem>
-    <MudItem xs="1" Class="align-self-center">
-        <MudFab Size="Size.Medium" StartIcon="@Icons.Material.Filled.Search" Color="Color.Primary" OnClick="() => ExtractRecipeAsync(Url)"/>
+    <MudItem lg="2" Class="align-self-center">
+        <MudButton Class="ml-2" Size="Size.Large" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Search" Disabled="@(IsLoading)" @onclick="() => ExtractRecipeAsync(Url)">Search</MudButton>
     </MudItem>
 </MudGrid>
 
 @if (IsLoading) {
-    <MudProgressLinear Color="Color.Tertiary" Indeterminate="true" Class="my-7" />
+    <LoaderComponent Message="Extracting Recipe..."/>
 }
 
 @code {
     private readonly List<BreadcrumbItem> crumbs = [
-        new BreadcrumbItem("Home", href: "#"),
+        new BreadcrumbItem("Recipes", href: "#"),
         new BreadcrumbItem("Extract Recipe", href: null, disabled: true),
     ];
 
