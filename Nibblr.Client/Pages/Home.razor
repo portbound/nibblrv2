@@ -3,17 +3,24 @@
 @inject NavigationManager Navigation
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Shared.Contracts.Responses
+@using Client.Components
 @rendermode InteractiveWebAssembly
 
 @if (!_recipes.Any()) {
-    <div>Loading...</div>
+    <LoaderComponent Message="Loading Recipes..."/>
 } else {
-    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-2"></MudTextField>
+    @* <MudContainer Class="d-flex justify-center"> *@
+    <MudContainer Class="d-none d-sm-flex justify-center">
+        <MudImage Src="Nibblr-250px.png" Width="250" Alt="Nibblr" />
+    </MudContainer>
+    
+    @* <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs> *@
+
+    <MudTextField @bind-Value="_searchString" TextChanged="FilterRecipes" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Default" Placeholder="Search Recipes or Tags" Variant="Variant.Outlined" Class="mt-2 search-field"></MudTextField>
     <MudGrid Class="mt-2">
-        @foreach (RecipeResponse recipe in _recipes) {
+        @foreach (RecipeResponse recipe in _filteredRecipes) {
             <MudItem xs="12" md="4" lg="3" xl="2">
-                <MudCard Class="ma-2" Elevation="10">
+                <MudCard Class="ma-2" Elevation="0" Outlined="true">
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h6">@recipe.Name</MudText>
@@ -23,9 +30,9 @@
                         <MudText Typo="Typo.subtitle2">@recipe.Description</MudText>
                     </MudCardContent>
                     <MudCardActions>
-                        <MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="@(recipe.Bookmarked ? Color.Warning : Color.Transparent)"/>
+                        <MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="@(recipe.Bookmarked ? Color.Error : Color.Transparent)"/>
                         <MudSpacer/>
-                        <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Color="Color.Info" @onclick="() => NavigateToRecipeView(recipe.ID)"/>
+                        <MudIconButton Icon="@Icons.Material.Outlined.ArrowCircleRight" Color="Color.Info" @onclick="() => NavigateToRecipeView(recipe.ID)"/>
                     </MudCardActions>
                 </MudCard>
             </MudItem>
@@ -35,15 +42,26 @@
 
 @code {
     List<RecipeResponse>? _recipes = [];
+    List<RecipeResponse>? _filteredRecipes = [];
     private string _searchString;
 
+    private readonly List<BreadcrumbItem> crumbs = [
+        new BreadcrumbItem("Recipes", href: null, disabled: true),
+    ];
 
     protected override async Task OnInitializedAsync() {
         RecipesResponse response = await Client.GetFromJsonAsync<RecipesResponse>("/api/recipes");
         _recipes = response.Items.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name).ToList();
+        _filteredRecipes = _recipes;
     }
 
     private void NavigateToRecipeView(int id) {
         Navigation.NavigateTo($"RecipeView/{id}");    
+    }
+
+    private void FilterRecipes() {
+        _filteredRecipes = string.IsNullOrWhiteSpace(_searchString)
+            ? _recipes
+            : _recipes.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase) || x.Tags.Any(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))).ToList();
     }
 }

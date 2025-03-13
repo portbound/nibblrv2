@@ -3,25 +3,23 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @using System.Web
+@using Client.Components
 @using Shared.Models
 
 <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs>
 
 <MudGrid Justify="Justify.Center">
     <MudItem xs="10">
-        <MudTextField ShrinkLabel Label="URL" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Language" AdornmentColor="Color.Info" @bind-Value="Url" />
+        <MudTextField Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Link" AdornmentColor="Color.Default" @bind-Value="Url" Class="search-field" Placeholder="Link to Recipe"/>
     </MudItem>
     <MudItem lg="2" Class="align-self-center">
-        <MudButton Class="ml-2" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Search" @onclick="() => ExtractRecipeAsync(Url)">Search</MudButton>
+        <MudButton Class="ml-2" Size="Size.Large" Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Search" Disabled="@(IsLoading)" @onclick="() => ExtractRecipeAsync(Url)">Search</MudButton>
     </MudItem>
 </MudGrid>
 
-@* @if (IsLoading) { *@
-    <div class="d-flex justify-space-between align-center">
-        <MudImage Fluid="true" Src="NibblrTP250p.png" Alt="Nibblr"/>
-        <MudProgressCircular Color="Color.Warning" Rounded="true" Size="Size.Large" StrokeWidth="4" Indeterminate="true" Class="my-7"/>
-    </div>
-@* } *@
+@if (IsLoading) {
+    <LoaderComponent Message="Extracting Recipe..."/>
+}
 
 @code {
     private readonly List<BreadcrumbItem> crumbs = [

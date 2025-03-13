@@ -8,7 +8,7 @@
 @if (_recipe == null) {
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 } else {
-    <MudPaper Elevation="2" Class="pa-4">
+    <MudPaper Elevation="0" Outlined="true" Class="pa-4">
         <MudGrid>
             <MudItem xs="12">
                     <MudStack Row="true">
@@ -40,7 +40,7 @@
                     <MudTooltip Text="@(_recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
                         <MudIconButton Size="Size.Medium"
                                        Icon="@Icons.Material.Filled.Bookmark"
-                                       Color="@(_recipe.Bookmarked ? Color.Warning : Color.Default)"
+                                       Color="@(_recipe.Bookmarked ? Color.Error : Color.Default)"
                                        @onclick="ToggleBookmark"/>
                     </MudTooltip>
                 </MudStack>
@@ -97,10 +97,10 @@
                             <MudText Typo="Typo.h6">Ingredients</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            @* <MudTooltip Text="Add all to shopping list"> *@
-                            @*     <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary" *@
-                            @*                     @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/> *@
-                            @* </MudTooltip> *@
+                            <MudTooltip Text="Add all to shopping list">
+                                <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary"
+                                                @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/>
+                            </MudTooltip>
                             <MudTooltip Text="Collapse Container">
                                 <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
                                                @onclick="() => _ingredientsVisible = !_ingredientsVisible"/>
@@ -114,7 +114,6 @@
                                 <MudListItem Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" IconColor="Color.Default">
                                     <div class="d-flex align-center">
                                         <div class="flex-grow-1">
-                                            
                                             <MudText>
                                                 <b>@FormatQuantity(ingredient)</b> @ingredient.Name
                                             </MudText>
@@ -141,9 +140,9 @@
                             <MudText Typo="Typo.h6">Instructions</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            @* <MudTooltip Text="Print instructions"> *@
-                            @*     <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Default" /> *@
-                            @* </MudTooltip> *@
+                            <MudTooltip Text="Print instructions">
+                                <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Default" />
+                            </MudTooltip>
                             <MudTooltip Text="Collapse Container">
                                 <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
                                                @onclick="() => _instructionsVisible = !_instructionsVisible"/>
@@ -200,27 +199,10 @@
     }
 
     private string FormatQuantity(Ingredients ingredient) {
-        if (ingredient.Weight is not null) {
-            return $"{ingredient.Weight}{ingredient.WeightUnit}";
+        if (ingredient.Quantity != null) {
+            return $"{ingredient.Quantity} ({ingredient.Weight}{ingredient.WeightUnit})";
         }
-
-        if (ingredient.Quantity.HasValue && ingredient.Quantity.Value != 0) {
-            // Format fractions nicely
-            if (ingredient.Quantity == 0.25) return "¼";
-            if (ingredient.Quantity == 0.5) return "½";
-            if (ingredient.Quantity == 0.75) return "¾";
-            if (ingredient.Quantity == 0.33 || ingredient.Quantity == 0.333) return "⅓";
-            if (ingredient.Quantity == 0.66 || ingredient.Quantity == 0.667) return "⅔";
-
-            // Whole numbers don't need decimal places
-            if (ingredient.Quantity % 1 == 0) {
-                return ingredient.Quantity.Value.ToString("0");
-            }
-
-            return ingredient.Quantity.Value.ToString("0.##");
-        }
-
-        return string.Empty;
+        return $"{ingredient.Weight}{ingredient.WeightUnit}";
     }
 
     private void AddToShoppingList(Ingredients ingredient) {

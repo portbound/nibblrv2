@@ -4,17 +4,16 @@
     background-size: 50px 50px;
     background-color: #FAF3E1;
     background-attachment: fixed;
-    min-height: 100vh; /* Ensures minimum height of viewport */
-    height: auto; /* Allows content to expand beyond viewport */
-    padding-bottom: 2rem; /* Optional: adds some space at the bottom */}
-
-.nibblr-icon {
-    max-width: 60px !important; 
+    min-height: 100vh; 
+    height: auto;
+    padding-bottom: 2rem;
 }
 
-/*@media (max-width: 600px) {*/
-/*    .mobile-full-width {*/
-/*        flex-basis: 100%;*/
-/*        max-width: 100%;*/
-/*    }*/
+/*.nibblr-icon {*/
+/*    max-width: 60px !important; */
 /*}*/
+
+.search-field {
+    font-size: 20px !important;
+    background-color: white;
+}
