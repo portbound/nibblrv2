@@ -16,8 +16,11 @@
                             <MudText Typo="Typo.h3">@_recipe.Name</MudText>
                         </MudPaper>
                         <MudSpacer/>
-                        <MudTooltip Text="Edit Recipe">
-                            <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Filled.Edit" Color="Color.Info" @onclick="EnableEdit"/>
+                        <MudTooltip Text="@(_recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
+                            <MudIconButton Size="Size.Large"
+                                           Icon="@Icons.Material.Filled.PushPin"
+                                           Color="@(_recipe.Bookmarked ? Color.Error : Color.Default)"
+                                           @onclick="ToggleBookmark"/>
                         </MudTooltip>
                     </MudStack>
                 <MudText Class="mt-2 mb-4" Typo="Typo.subtitle1">
@@ -37,11 +40,8 @@
                         }
                     </MudPaper>
                     <MudSpacer />
-                    <MudTooltip Text="@(_recipe.Bookmarked ? "Remove Bookmark" : "Add Bookmark")">
-                        <MudIconButton Size="Size.Medium"
-                                       Icon="@Icons.Material.Filled.Bookmark"
-                                       Color="@(_recipe.Bookmarked ? Color.Error : Color.Default)"
-                                       @onclick="ToggleBookmark"/>
+                    <MudTooltip Text="Edit Recipe">
+                        <MudIconButton Size="Size.Large" Icon="@Icons.Material.Filled.Edit" Color="Color.Info" @onclick="EnableEdit"></MudIconButton>
                     </MudTooltip>
                 </MudStack>
             </MudItem>
@@ -101,10 +101,6 @@
                             <MudText Typo="Typo.h6">Ingredients</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            @* <MudTooltip Text="Add all to shopping list"> *@
-                            @*     <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary" *@
-                            @*                     @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/> *@
-                            @* </MudTooltip> *@
                             <MudTooltip Text="Collapse Container">
                                 <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
                                                @onclick="() => _ingredientsVisible = !_ingredientsVisible"/>
@@ -113,28 +109,32 @@
                     </MudCardHeader>
                     <MudCollapse Expanded="_ingredientsVisible">
                         <MudCardContent>
-                        <MudList T="Ingredients" Dense="true" ReadOnly="true">
-                            @foreach (Ingredients ingredient in _recipe.Ingredients) {
-                                <MudListItem Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" IconColor="Color.Default">
-                                    <div class="d-flex align-center">
-                                        <div class="flex-grow-1">
-                                            <MudText>
-                                                <MudText Inline="true"><b>@($"{ingredient.Quantity} {ingredient.Unit}")</b></MudText>
-                                                <MudText Inline="true">@ingredient.Name</MudText>
-                                            </MudText>
-                                            @if (!string.IsNullOrEmpty(ingredient.Notes)) {
-                                                <MudText Typo="Typo.caption" Color="Color.Default"><em>@ingredient.Notes</em></MudText>
-                                            }
+                            <MudList T="Ingredients" Dense="true" ReadOnly="true">
+                                @foreach (Ingredients ingredient in _recipe.Ingredients) {
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" IconColor="Color.Default">
+                                        <div class="d-flex align-center">
+                                            <div class="flex-grow-1">
+                                                <MudText>
+                                                    <MudText Inline="true"><b>@($"{ingredient.Quantity} {ingredient.Unit}")</b></MudText>
+                                                    <MudText Inline="true">@ingredient.Name</MudText>
+                                                </MudText>
+                                                @if (!string.IsNullOrEmpty(ingredient.Notes)) {
+                                                    <MudText Typo="Typo.caption" Color="Color.Default"><em>@ingredient.Notes</em></MudText>
+                                                }
+                                            </div>
+                                            <MudTooltip Text="Add to shopping list">
+                                                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Default"
+                                                               @onclick="@(() => AddToShoppingList(ingredient))"/>
+                                            </MudTooltip>
                                         </div>
-                                        <MudTooltip Text="Add to shopping list">
-                                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" Color="Color.Default"
-                                                           @onclick="@(() => AddToShoppingList(ingredient))"/>
-                                        </MudTooltip>
-                                    </div>
-                                </MudListItem>
-                            }
-                        </MudList>
-                    </MudCardContent>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                            <MudTooltip Text="Add all to shopping list">
+                                <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary"
+                                                @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/>
+                            </MudTooltip>
+                        </MudCardContent>
                     </MudCollapse>
                 </MudCard>
             </MudItem>

@@ -4,35 +4,66 @@
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Shared.Contracts.Responses
 @using Client.Components
+@using Shared.Models
 @rendermode InteractiveWebAssembly
 
-@if (!_recipes.Any()) {
+@if (_recipes.Count < 1) {
     <LoaderComponent Message="Loading Recipes..."/>
 } else {
-    @* <MudContainer Class="d-flex justify-center"> *@
     <MudContainer Class="d-none d-sm-flex justify-center">
-        <MudImage Src="Nibblr-250px.png" Width="250" Alt="Nibblr" />
+        <MudImage Src="images/Nibblr-250px.png" Width="250" Alt="Nibblr"/>
     </MudContainer>
     
-    @* <MudBreadcrumbs Items="crumbs"></MudBreadcrumbs> *@
-
     <MudTextField @bind-Value="_searchString" TextChanged="FilterRecipes" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Default" Placeholder="Search Recipes or Tags" Variant="Variant.Outlined" Class="mt-2 search-field"></MudTextField>
-    <MudGrid Class="mt-2">
+    
+    <MudGrid Class="mt-4">
         @foreach (RecipeResponse recipe in _filteredRecipes) {
             <MudItem xs="12" md="4" lg="3" xl="2">
-                <MudCard Class="ma-2" Elevation="0" Outlined="true">
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h6">@recipe.Name</MudText>
-                        </CardHeaderContent>
+                <MudCard Class="index-card ma-2">
+                    <MudCardHeader class="index-card-header">
+                        <MudText class="index-card-title">@recipe.Name</MudText>
+                        @if (recipe.Bookmarked) {
+                            <div class="bookmark-indicator">
+                                <MudIcon Icon="@Icons.Material.Filled.PushPin" Color="Color.Error" Size="Size.Medium" />
+                            </div>
+                        }
                     </MudCardHeader>
-                    <MudCardContent>
-                        <MudText Typo="Typo.subtitle2">@recipe.Description</MudText>
+                    <MudCardContent Class="pa-0">
+                        <MudText Typo="Typo.subtitle2" Color="Color.Default">@recipe.Description</MudText>
+                        
+                        <MudGrid Class="pt-5" Justify="Justify.Center">
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Filled.LocalFireDepartment" Size="Size.Small" Color="Color.Default"/>
+                                @recipe.Calories
+                            </MudItem>
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Filled.People" Size="Size.Small" Color="Color.Default"/>
+                                @recipe.Servings
+                            </MudItem>
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Size="Size.Small" Color="Color.Default"/>
+                                @recipe.Ingredients.Count
+                            </MudItem>
+                            <MudItem>
+                                <MudIcon Icon="@Icons.Material.Filled.EditNote" Size="Size.Small" Color="Color.Default"/>
+                                @recipe.Instructions.Count
+                            </MudItem>
+                        </MudGrid>
+                        
+                        <MudStack Row="true" Class="index-card-tags pt-5">
+                            @foreach (Tag tag in recipe.Tags) {
+                                <span class="index-card-tag">@tag.Name</span>
+                            }
+                        </MudStack>
                     </MudCardContent>
-                    <MudCardActions>
-                        <MudIcon Icon="@Icons.Material.Filled.Bookmark" Color="@(recipe.Bookmarked ? Color.Error : Color.Transparent)"/>
-                        <MudSpacer/>
-                        <MudIconButton Icon="@Icons.Material.Outlined.ArrowCircleRight" Color="Color.Info" @onclick="() => NavigateToRecipeView(recipe.ID)"/>
+                    <MudCardActions Class="index-card-actions">
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   EndIcon="@Icons.Material.Outlined.FlipToBack"
+                                   Size="Size.Small"
+                                   OnClick="@(() => NavigateToRecipeView(recipe.ID))">
+                            See Recipe
+                        </MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>
@@ -41,18 +72,16 @@
 }
 
 @code {
-    List<RecipeResponse>? _recipes = [];
-    List<RecipeResponse>? _filteredRecipes = [];
-    private string _searchString;
-
-    private readonly List<BreadcrumbItem> crumbs = [
-        new BreadcrumbItem("Recipes", href: null, disabled: true),
-    ];
+    List<RecipeResponse> _recipes = [];
+    List<RecipeResponse> _filteredRecipes = [];
+    private string _searchString = string.Empty;
 
     protected override async Task OnInitializedAsync() {
-        RecipesResponse response = await Client.GetFromJsonAsync<RecipesResponse>("/api/recipes");
-        _recipes = response.Items.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name).ToList();
-        _filteredRecipes = _recipes;
+        RecipesResponse? response = await Client.GetFromJsonAsync<RecipesResponse>("/api/recipes");
+        if (response != null) {
+            _recipes = response.Items.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name).ToList();
+            _filteredRecipes = _recipes;
+        }
     }
 
     private void NavigateToRecipeView(int id) {
@@ -62,6 +91,6 @@
     private void FilterRecipes() {
         _filteredRecipes = string.IsNullOrWhiteSpace(_searchString)
             ? _recipes
-            : _recipes.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase) || x.Tags.Any(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))).ToList();
+            : _recipes.Where(x => x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase) || x.Tags.Any(t => t.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))).ToList();
     }
 }

@@ -55,7 +55,7 @@
                                StartIcon="@Icons.Material.Filled.Add"
                                Class="align-self-center"
                                Disabled="@string.IsNullOrWhiteSpace(_tagName)"
-                               @onclick="() => AddTag(_tagName)">Add Tag</MudButton>
+                               @onclick="() => AddTag(_tagName)">Tag</MudButton>
                 </div>
             </MudItem>
             
@@ -63,28 +63,31 @@
                 <MudCard Elevation="0" Outlined="true" Class="mb-4">
                     <MudCardHeader>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h6">Macros</MudText>
+                            <MudGrid Justify="Justify.SpaceBetween">
+                                <MudItem xs="3">
+                                    <MudText Typo="Typo.h6">Macros</MudText>
+                                </MudItem>
+                                <MudItem xs="4" sm="3">
+                                    <MudTextField T="int" @bind-Value="_recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
+                                </MudItem>
+                            </MudGrid>
                         </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudStack Row="true" Class="d-flex flex-row justify-center">
-                            <MudItem xs="2">
-                                <MudTextField T="int" @bind-Value="_recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
-                                
-                            </MudItem>
-                            <MudItem xs="2">
+                        <MudGrid Justify="Justify.SpaceEvenly">
+                            <MudItem xs="6" sm="3">
                                 <MudTextField T="int" @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
                             </MudItem>
-                            <MudItem xs="2">
+                            <MudItem xs="6" sm="3">
                                 <MudTextField T="double" @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
                             </MudItem>
-                            <MudItem xs="2">
+                            <MudItem xs="6" sm="3">
                                 <MudTextField T="double" @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
                             </MudItem>
-                            <MudItem xs="2">
+                            <MudItem xs="6" sm="3">
                                 <MudTextField T="double" @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
                             </MudItem>
-                        </MudStack>
+                        </MudGrid>
                     </MudCardContent>
                 </MudCard>
             </MudItem>
@@ -335,7 +338,7 @@
 
                 if (response.IsSuccessStatusCode) {
                     Snackbar.Add("Recipe deleted successfully", Severity.Success);
-                    NavigationManager.NavigateTo("/home");
+                    NavigationManager.NavigateTo("#");
                 } else {
                     Snackbar.Add("Error deleting recipe", Severity.Error);
                 }
