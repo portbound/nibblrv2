@@ -22,8 +22,9 @@ public static class ContractMapping {
             Description = request.Description,
             Ingredients = request.Ingredients.Select(x => new Ingredients {
                 Quantity = x.Quantity,
-                Weight = x.Weight,
-                WeightUnit = x.WeightUnit,
+                // Weight = x.Weight,
+                // WeightUnit = x.WeightUnit,
+                Unit = x.Unit,
                 Name = x.Name,
                 Notes = x.Notes
             }).ToList(),
@@ -51,8 +52,9 @@ public static class ContractMapping {
                 ID = x.ID,
                 RecipeID = recipe.ID,
                 Quantity = x.Quantity,
-                Weight = x.Weight,
-                WeightUnit = x.WeightUnit,
+                // Weight = x.Weight,
+                // WeightUnit = x.WeightUnit,
+                Unit = x.Unit,
                 Name = x.Name,
                 Notes = x.Notes
             }).ToList(),
@@ -96,8 +98,9 @@ public static class ContractMapping {
             Ingredients = request.Ingredients.Select(x => new Ingredients {
                 RecipeID = id,
                 Quantity = x.Quantity,
-                Weight = x.Weight,
-                WeightUnit = x.WeightUnit,
+                // Weight = x.Weight,
+                // WeightUnit = x.WeightUnit,
+                Unit = x.Unit,
                 Name = x.Name,
                 Notes = x.Notes
             }).ToList(),

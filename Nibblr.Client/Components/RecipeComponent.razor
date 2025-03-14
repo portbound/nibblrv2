@@ -63,26 +63,30 @@
                         <MudGrid>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@_recipe.Calories</MudText>
+                                    <MudText Class="d-sm-none"Typo="Typo.h6">@_recipe.Calories</MudText>
+                                    <MudText Class="d-none d-sm-block"Typo="Typo.h5">@_recipe.Calories</MudText>
                                     <MudText Typo="Typo.caption">Calories</MudText>
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@_recipe.Fat g</MudText>
-                                    <MudText Typo="Typo.caption">Fats</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Fat</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Fat</MudText>
+                                    <MudText Typo="Typo.caption">Fats(g)</MudText>
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@_recipe.Carbs g</MudText>
-                                    <MudText Typo="Typo.caption">Carbs</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Carbs</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Carbs</MudText>
+                                    <MudText Typo="Typo.caption">Carbs(g)</MudText>
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Typo="Typo.h5">@_recipe.Protein g</MudText>
-                                    <MudText Typo="Typo.caption">Protein</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Protein</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Protein</MudText>
+                                    <MudText Typo="Typo.caption">Protein(g)</MudText>
                                 </MudPaper>
                             </MudItem>
                         </MudGrid>
@@ -97,10 +101,10 @@
                             <MudText Typo="Typo.h6">Ingredients</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudTooltip Text="Add all to shopping list">
-                                <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary"
-                                                @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/>
-                            </MudTooltip>
+                            @* <MudTooltip Text="Add all to shopping list"> *@
+                            @*     <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart" Color="Color.Primary" *@
+                            @*                     @onclick="@(() => Snackbar.Add("All ingredients added to shopping list", Severity.Success))"/> *@
+                            @* </MudTooltip> *@
                             <MudTooltip Text="Collapse Container">
                                 <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
                                                @onclick="() => _ingredientsVisible = !_ingredientsVisible"/>
@@ -115,10 +119,11 @@
                                     <div class="d-flex align-center">
                                         <div class="flex-grow-1">
                                             <MudText>
-                                                <b>@FormatQuantity(ingredient)</b> @ingredient.Name
+                                                <MudText Inline="true"><b>@($"{ingredient.Quantity} {ingredient.Unit}")</b></MudText>
+                                                <MudText Inline="true">@ingredient.Name</MudText>
                                             </MudText>
                                             @if (!string.IsNullOrEmpty(ingredient.Notes)) {
-                                                <MudText Typo="Typo.caption" Color="Color.Secondary">@ingredient.Notes</MudText>
+                                                <MudText Typo="Typo.caption" Color="Color.Default"><em>@ingredient.Notes</em></MudText>
                                             }
                                         </div>
                                         <MudTooltip Text="Add to shopping list">
@@ -140,9 +145,9 @@
                             <MudText Typo="Typo.h6">Instructions</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudTooltip Text="Print instructions">
-                                <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Default" />
-                            </MudTooltip>
+                            @* <MudTooltip Text="Print instructions"> *@
+                            @*     <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Default" /> *@
+                            @* </MudTooltip> *@
                             <MudTooltip Text="Collapse Container">
                                 <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
                                                @onclick="() => _instructionsVisible = !_instructionsVisible"/>
@@ -198,12 +203,12 @@
         }
     }
 
-    private string FormatQuantity(Ingredients ingredient) {
-        if (ingredient.Quantity != null) {
-            return $"{ingredient.Quantity} ({ingredient.Weight}{ingredient.WeightUnit})";
-        }
-        return $"{ingredient.Weight}{ingredient.WeightUnit}";
-    }
+    // private string FormatQuantity(Ingredients ingredient) {
+    //     if (ingredient.Quantity != null) {
+    //         return $"{ingredient.Quantity} ({ingredient.Weight}{ingredient.WeightUnit})";
+    //     }
+    //     return $"{ingredient.Weight}{ingredient.WeightUnit}";
+    // }
 
     private void AddToShoppingList(Ingredients ingredient) {
         Snackbar.Add($"Added {ingredient.Name} to shopping list", Severity.Success);

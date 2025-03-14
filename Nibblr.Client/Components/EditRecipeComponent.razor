@@ -1,3 +1,4 @@
+@using System.Collections
 @using System.Timers
 @using Shared.Models
 @inject HttpClient Client
@@ -68,29 +69,20 @@
                     <MudCardContent>
                         <MudStack Row="true" Class="d-flex flex-row justify-center">
                             <MudItem xs="2">
-                                <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="_recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
-                                </MudPaper>
+                                <MudTextField T="int" @bind-Value="_recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
+                                
                             </MudItem>
                             <MudItem xs="2">
-                                <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
-                                </MudPaper>
+                                <MudTextField T="int" @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem xs="2">
-                                <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
-                                </MudPaper>
+                                <MudTextField T="double" @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem xs="2">
-                                <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
-                                </MudPaper>
+                                <MudTextField T="double" @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem xs="2">
-                                <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudNumericField @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
-                                </MudPaper>
+                                <MudTextField T="double" @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
                             </MudItem>
                         </MudStack>
                     </MudCardContent>
@@ -113,16 +105,23 @@
                         <MudList T="Ingredients" Dense="true" ReadOnly="true">
                             @foreach (Ingredients ingredient in _recipe.Ingredients) {
                                 <MudListItem >
-                                    <MudStack Row="true" Class="flex-grow-1 align-center">
+                                    <MudStack Row="true" >
                                         <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Label="Ingredient"/>
                                         <MudTooltip Text="Remove Ingredient">
                                             <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveIngredient(ingredient))"/>
                                         </MudTooltip>
                                     </MudStack>
                                     <MudStack Row="true" Class="flex-grow-1 align-center">
-                                        <MudNumericField @bind-Value="ingredient.Quantity" Variant="Variant.Outlined" Label="Qty" Class="mr-2"/>
-                                        <MudNumericField @bind-Value="ingredient.Weight" Variant="Variant.Outlined" Label="Weight" Class="mr-2"/>
-                                        <MudTextField @bind-Value="ingredient.WeightUnit" Variant="Variant.Outlined" Label="Unit"/>
+                                        <div style="width: 40%;">
+                                            <MudTextField T="double" @bind-Value="ingredient.Quantity" Variant="Variant.Outlined" Label="Quantity" Class="mr-2 mud-width-full" />
+                                        </div>
+                                        <div style="width: 60%;">
+                                            <MudSelect @bind-Value="ingredient.Unit" Variant="Variant.Outlined" Label="Unit" Placeholder="--" Class="mud-width-full" >
+                                                @foreach (var unit in Units) {
+                                                    <MudSelectItem Value="@(unit)">@unit</MudSelectItem>
+                                                }
+                                            </MudSelect>
+                                        </div>
                                     </MudStack>
                                     <MudStack Row="true" Class="flex-grow-1 align-center mb-5">
                                         <MudTextField @bind-Value="ingredient.Notes" Variant="Variant.Outlined" Label="Notes"/>
@@ -204,11 +203,32 @@
 
     @code {
         private Recipe? _recipe = new();
-        private List<Tag>? _allTags = [];
+        private List<Tag> _allTags = [];
         private string? _tagName; 
         private bool _isEditing = false;
         private bool _instructionsVisible = true;
         private bool _ingredientsVisible = true;
+
+        private List<string> Units = [
+            "cup",
+            "pint",
+            "quart",
+            "gallon",
+            "tsp",
+            "tbsp",
+            "pinch",
+            "g",
+            "kg",
+            "oz",
+            "lb",
+            "ml",
+            "fl oz",
+            "whole",
+            "large",
+            "medium",
+            "small",
+            "can"
+        ];
 
         [Parameter] public int? ID { get; set; }
         [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
@@ -249,7 +269,7 @@
         private void AddNewIngredient() {
             _recipe.Ingredients.Add(new Ingredients {
                 Name = "New Ingredient",
-                Quantity = null
+                Quantity = 1
             });
         }
 
@@ -325,6 +345,5 @@
             }
             
         }
-
     }
 }
