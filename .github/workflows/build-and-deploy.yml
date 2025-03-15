@@ -8,11 +8,11 @@ on:
         
   env:
     AZURE_WEBAPP_NAME: nibblr
-    AZURE_WEBAPP_PACKAGE_PATH: 
+    AZURE_WEBAPP_PACKAGE_PATH: "./Nibblr.Server/publish"
     DOTNET_VERSION: "9.x"
-    SOLUTION_PATH: ""
-    API_PROJECT_PATH: ""
-    PUBLISH_DIR: ""
+    SOLUTION_PATH: "NibblrV2.sln"
+    API_PROJECT_PATH: "Nibblr.Server"
+    PUBLISH_DIR: "./publish"
       
   jobs:
     name: Build and Test
