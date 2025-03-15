@@ -47,9 +47,10 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             entity.HasKey(e => e.ID);
             entity.Property(e => e.ID).ValueGeneratedOnAdd();
 
-            entity.Property(e => e.Quantity);
-            entity.Property(e => e.Weight);
-            entity.Property(e => e.WeightUnit);
+            entity.Property(e => e.Quantity).IsRequired();
+            // entity.Property(e => e.Weight);
+            // entity.Property(e => e.WeightUnit);
+            entity.Property(e => e.Unit).IsRequired();
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Notes);
         });

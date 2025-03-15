@@ -11,13 +11,13 @@
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@(_open ? Icons.Material.Filled.ArrowBack : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudSpacer />
-        <MudImage Src="Nibblr-250px.png" Width="60" Alt="Nibblr" Class="nibblr-icon"/>
+        <MudImage Src="images/Nibblr-250px.png" Width="60" Alt="Nibblr" Class="nibblr-icon"/>
         
     </MudAppBar>
     <MudDrawer @bind-Open="@_open" ClipMode="DrawerClipMode.Never" Elevation="1" Variant="@DrawerVariant.Temporary">
         <MudDrawerHeader Class="justify-center">
             <MudText Typo="Typo.h6" Class="align-self-end">Nibblr</MudText>
-            <MudImage Src="Nibblr-250px.png" Width="60" Alt="Nibblr" Class="nibblr-icon"/>
+            <MudImage Src="images/Nibblr-250px.png" Width="60" Alt="Nibblr" Class="nibblr-icon"/>
         </MudDrawerHeader>
         <MudNavMenu>
             <MudNavLink Href="/" Match="NavLinkMatch.All">

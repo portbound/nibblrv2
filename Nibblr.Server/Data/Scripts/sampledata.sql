@@ -1,3 +1,4 @@
+-- Insert recipe data into your existing schema
 INSERT INTO "Recipes"
 ("ID", "Name", "Description", "URL", "Bookmarked", "Servings", "Calories", "Fat", "Carbs", "Protein")
 VALUES
@@ -62,19 +63,19 @@ VALUES
  14.8);
 
 -- Recipe 1: Classic Spaghetti Bolognese - Ingredients
-INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Weight", "WeightUnit", "Notes")
+INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Unit", "Notes")
 VALUES
-    (1, 'Spaghetti', 400, 400, 'g', ''),
-    (1, 'Ground Beef', 1, 500, 'g', ''),
-    (1, 'Onion', 1, 150, 'g', ''),
-    (1, 'Garlic', 2, 10, 'g', 'Cloves, minced'),
-    (1, 'Carrot', 1, 100, 'g', 'Finely diced'),
-    (1, 'Celery', 1, 100, 'g', 'Finely diced'),
-    (1, 'Tomato Paste', 2, 30, 'g', 'Tablespoons'),
-    (1, 'Crushed Tomatoes', 1, 400, 'g', 'Can'),
-    (1, 'Red Wine', 0.5, 125, 'ml', 'Cup'),
-    (1, 'Beef Stock', 1, 250, 'ml', 'Cup'),
-    (1, 'Parmesan Cheese', 50, 50, 'g', 'Grated, for serving');
+    (1, 'Spaghetti', 400, 'g', ''),
+    (1, 'Ground Beef', 1, 'lb', ''),
+    (1, 'Onion', 1, 'whole', ''),
+    (1, 'Garlic', 2, 'cloves', 'minced'),
+    (1, 'Carrot', 1, 'whole', 'Finely diced'),
+    (1, 'Celery', 1, 'stalk', 'Finely diced'),
+    (1, 'Tomato Paste', 2, 'tbsp', ''),
+    (1, 'Crushed Tomatoes', 1, 'can', ''),
+    (1, 'Red Wine', 0.5, 'cup', ''),
+    (1, 'Beef Stock', 1, 'cup', ''),
+    (1, 'Parmesan Cheese', 50, 'g', 'Grated, for serving');
 
 -- Recipe 1: Classic Spaghetti Bolognese - Instructions
 INSERT INTO "Instructions" ("RecipeID", "Step", "Body")
@@ -90,16 +91,16 @@ VALUES
     (1, 9, 'Serve sauce over spaghetti and top with grated Parmesan cheese.');
 
 -- Recipe 2: Avocado Toast with Poached Egg - Ingredients
-INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Weight", "WeightUnit", "Notes")
+INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Unit", "Notes")
 VALUES
-    (2, 'Sourdough Bread', 2, 80, 'g', 'Slices'),
-    (2, 'Avocado', 1, 150, 'g', 'Ripe'),
-    (2, 'Eggs', 2, 100, 'g', ''),
-    (2, 'Lemon', 0.5, 30, 'g', 'Juice only'),
-    (2, 'Red Pepper Flakes', 0.25, 1, 'g', 'Teaspoon'),
-    (2, 'Salt', 0.5, 3, 'g', 'Teaspoon'),
-    (2, 'Black Pepper', 0.25, 1, 'g', 'Teaspoon, freshly ground'),
-    (2, 'Fresh Herbs', 1, 5, 'g', 'Such as cilantro or chives, chopped');
+    (2, 'Sourdough Bread', 2, 'slices', ''),
+    (2, 'Avocado', 1, 'whole', 'Ripe'),
+    (2, 'Eggs', 2, 'whole', ''),
+    (2, 'Lemon', 0.5, 'whole', 'Juice only'),
+    (2, 'Red Pepper Flakes', 0.25, 'tsp', ''),
+    (2, 'Salt', 0.5, 'tsp', ''),
+    (2, 'Black Pepper', 0.25, 'tsp', 'freshly ground'),
+    (2, 'Fresh Herbs', 1, 'tbsp', 'Such as cilantro or chives, chopped');
 
 -- Recipe 2: Avocado Toast with Poached Egg - Instructions
 INSERT INTO "Instructions" ("RecipeID", "Step", "Body")
@@ -115,22 +116,22 @@ VALUES
     (2, 9, 'Sprinkle with red pepper flakes and fresh herbs. Season with additional salt and pepper if desired.');
 
 -- Recipe 3: Chicken Tikka Masala - Ingredients
-INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Weight", "WeightUnit", "Notes")
+INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Unit", "Notes")
 VALUES
-    (3, 'Chicken Breasts', 2, 500, 'g', 'Cut into chunks'),
-    (3, 'Plain Yogurt', 0.5, 125, 'g', 'Cup'),
-    (3, 'Lemon Juice', 2, 30, 'ml', 'Tablespoons'),
-    (3, 'Garam Masala', 2, 12, 'g', 'Tablespoons, divided'),
-    (3, 'Ground Turmeric', 1, 3, 'g', 'Teaspoon'),
-    (3, 'Ground Cumin', 1, 3, 'g', 'Teaspoon'),
-    (3, 'Ground Coriander', 1, 3, 'g', 'Teaspoon'),
-    (3, 'Paprika', 1, 3, 'g', 'Teaspoon'),
-    (3, 'Onion', 1, 150, 'g', 'Large, finely chopped'),
-    (3, 'Garlic', 4, 20, 'g', 'Cloves, minced'),
-    (3, 'Ginger', 1, 15, 'g', 'Inch piece, grated'),
-    (3, 'Tomato Sauce', 1, 425, 'g', 'Can'),
-    (3, 'Heavy Cream', 1, 240, 'ml', 'Cup'),
-    (3, 'Fresh Cilantro', 0.25, 10, 'g', 'Cup, chopped');
+    (3, 'Chicken Breasts', 2, 'whole', 'Cut into chunks'),
+    (3, 'Plain Yogurt', 0.5, 'cup', ''),
+    (3, 'Lemon Juice', 2, 'tbsp', ''),
+    (3, 'Garam Masala', 2, 'tbsp', 'divided'),
+    (3, 'Ground Turmeric', 1, 'tsp', ''),
+    (3, 'Ground Cumin', 1, 'tsp', ''),
+    (3, 'Ground Coriander', 1, 'tsp', ''),
+    (3, 'Paprika', 1, 'tsp', ''),
+    (3, 'Onion', 1, 'large', 'finely chopped'),
+    (3, 'Garlic', 4, 'cloves', 'minced'),
+    (3, 'Ginger', 1, 'inch', 'grated'),
+    (3, 'Tomato Sauce', 1, 'can', ''),
+    (3, 'Heavy Cream', 1, 'cup', ''),
+    (3, 'Fresh Cilantro', 0.25, 'cup', 'chopped');
 
 -- Recipe 3: Chicken Tikka Masala - Instructions
 INSERT INTO "Instructions" ("RecipeID", "Step", "Body")
@@ -147,18 +148,18 @@ VALUES
     (3, 10, 'Garnish with chopped cilantro and serve with rice or naan bread.');
 
 -- Recipe 4: Blueberry Pancakes - Ingredients
-INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Weight", "WeightUnit", "Notes")
+INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Unit", "Notes")
 VALUES
-    (4, 'All-Purpose Flour', 1.5, 180, 'g', 'Cups'),
-    (4, 'Sugar', 3, 38, 'g', 'Tablespoons'),
-    (4, 'Baking Powder', 1.5, 7, 'g', 'Teaspoons'),
-    (4, 'Salt', 0.5, 3, 'g', 'Teaspoon'),
-    (4, 'Milk', 1.25, 300, 'ml', 'Cups'),
-    (4, 'Eggs', 2, 100, 'g', ''),
-    (4, 'Unsalted Butter', 3, 45, 'g', 'Tablespoons, melted'),
-    (4, 'Vanilla Extract', 1, 5, 'ml', 'Teaspoon'),
-    (4, 'Fresh Blueberries', 1, 150, 'g', 'Cup'),
-    (4, 'Maple Syrup', 0.5, 120, 'ml', 'Cup, for serving');
+    (4, 'All-Purpose Flour', 1.5, 'cups', ''),
+    (4, 'Sugar', 3, 'tbsp', ''),
+    (4, 'Baking Powder', 1.5, 'tsp', ''),
+    (4, 'Salt', 0.5, 'tsp', ''),
+    (4, 'Milk', 1.25, 'cups', ''),
+    (4, 'Eggs', 2, 'whole', ''),
+    (4, 'Unsalted Butter', 3, 'tbsp', 'melted'),
+    (4, 'Vanilla Extract', 1, 'tsp', ''),
+    (4, 'Fresh Blueberries', 1, 'cup', ''),
+    (4, 'Maple Syrup', 0.5, 'cup', 'for serving');
 
 -- Recipe 4: Blueberry Pancakes - Instructions
 INSERT INTO "Instructions" ("RecipeID", "Step", "Body")
@@ -174,23 +175,23 @@ VALUES
     (4, 9, 'Serve warm with maple syrup.');
 
 -- Recipe 5: Roasted Vegetable Quinoa Bowl - Ingredients
-INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Weight", "WeightUnit", "Notes")
+INSERT INTO "Ingredients" ("RecipeID", "Name", "Quantity", "Unit", "Notes")
 VALUES
-    (5, 'Quinoa', 1, 185, 'g', 'Cup, uncooked'),
-    (5, 'Vegetable Broth', 2, 480, 'ml', 'Cups'),
-    (5, 'Sweet Potato', 1, 200, 'g', 'Medium, cubed'),
-    (5, 'Bell Peppers', 2, 200, 'g', 'Mixed colors, sliced'),
-    (5, 'Red Onion', 1, 150, 'g', 'Medium, sliced'),
-    (5, 'Zucchini', 1, 200, 'g', 'Medium, sliced'),
-    (5, 'Chickpeas', 1, 400, 'g', 'Can, drained and rinsed'),
-    (5, 'Olive Oil', 3, 45, 'ml', 'Tablespoons'),
-    (5, 'Lemon', 1, 60, 'g', 'Juiced'),
-    (5, 'Cumin', 2, 6, 'g', 'Teaspoons'),
-    (5, 'Paprika', 1, 3, 'g', 'Teaspoon'),
-    (5, 'Garlic Powder', 1, 3, 'g', 'Teaspoon'),
-    (5, 'Avocado', 1, 150, 'g', 'Sliced'),
-    (5, 'Feta Cheese', 0.5, 75, 'g', 'Cup, crumbled'),
-    (5, 'Fresh Parsley', 0.25, 15, 'g', 'Cup, chopped');
+    (5, 'Quinoa', 1, 'cup', 'uncooked'),
+    (5, 'Vegetable Broth', 2, 'cups', ''),
+    (5, 'Sweet Potato', 1, 'medium', 'cubed'),
+    (5, 'Bell Peppers', 2, 'whole', 'Mixed colors, sliced'),
+    (5, 'Red Onion', 1, 'medium', 'sliced'),
+    (5, 'Zucchini', 1, 'medium', 'sliced'),
+    (5, 'Chickpeas', 1, 'can', 'drained and rinsed'),
+    (5, 'Olive Oil', 3, 'tbsp', ''),
+    (5, 'Lemon', 1, 'whole', 'Juiced'),
+    (5, 'Cumin', 2, 'tsp', ''),
+    (5, 'Paprika', 1, 'tsp', ''),
+    (5, 'Garlic Powder', 1, 'tsp', ''),
+    (5, 'Avocado', 1, 'whole', 'Sliced'),
+    (5, 'Feta Cheese', 0.5, 'cup', 'crumbled'),
+    (5, 'Fresh Parsley', 0.25, 'cup', 'chopped');
 
 -- Recipe 5: Roasted Vegetable Quinoa Bowl - Instructions
 INSERT INTO "Instructions" ("RecipeID", "Step", "Body")
@@ -207,7 +208,7 @@ VALUES
 
 -- Add tags
 INSERT INTO "Tags" ("ID", "Name")
-VALUES 
+VALUES
     (1, 'Vegetarian'),
     (2, 'High Protein'),
     (3, 'Low Carb'),
@@ -231,4 +232,3 @@ VALUES
     (21, 'Indian'),
     (22, 'American'),
     (23, 'African');
-    

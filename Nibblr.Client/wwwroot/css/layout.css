@@ -9,11 +9,77 @@
     padding-bottom: 2rem;
 }
 
-/*.nibblr-icon {*/
-/*    max-width: 60px !important; */
-/*}*/
-
 .search-field {
     font-size: 20px !important;
     background-color: white;
+}
+
+.index-card {
+    border: 1px solid #bdbdbd;
+    padding: 16px;
+    height: 100%;
+    position: relative;
+}
+
+.index-card-header {
+    padding-left: 0; 
+    padding-top: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #bdbdbd;
+    margin-bottom: 12px;
+}
+
+.index-card-title {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    font-size: 1.25rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.bookmark-indicator {
+    position: absolute;
+    top: -8px;
+    right: 8px;
+}
+
+.index-card-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.index-card-nutrition {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nutrition-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+.index-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.index-card-tag {
+    background-color: rgba(0,0,0,0.05);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.index-card-actions {
+    justify-content: end;
+    padding-bottom: 0;
+    padding-top: 16px;
+    border-top: 1px dashed #bdbdbd;
 }
