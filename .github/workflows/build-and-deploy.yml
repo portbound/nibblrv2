@@ -1,4 +1,4 @@
-name: Nibblr
+name: Nibblr 
 
 on: 
   workflow_dispatch: 
@@ -6,17 +6,18 @@ on:
     branches:
       - main
         
-  env:
-    AZURE_WEBAPP_NAME: nibblr
-    AZURE_WEBAPP_PACKAGE_PATH: "./Nibblr.Server/publish"
-    DOTNET_VERSION: "9.x"
-    SOLUTION_PATH: "NibblrV2.sln"
-    API_PROJECT_PATH: "Nibblr.Server"
-    PUBLISH_DIR: "./publish"
+env:
+  AZURE_WEBAPP_NAME: nibblr
+  AZURE_WEBAPP_PACKAGE_PATH: "./Nibblr.Server/publish"
+  DOTNET_VERSION: "9.x"
+  SOLUTION_PATH: "NibblrV2.sln"
+  API_PROJECT_PATH: "Nibblr.Server"
+  PUBLISH_DIR: "./publish"
       
-  jobs:
+jobs:
+  build-and-test:
     name: Build and Test
-    run-on: ubuntu-latest 
+    runs-on: ubuntu-latest 
     
     steps:
       - uses: actions/checkout@v4
