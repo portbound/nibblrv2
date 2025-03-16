@@ -19,7 +19,7 @@ public class RecipeService(IRecipeRepository _recipeRepository, ITagsService _ta
         return (status, recipe);
     }
     
-    public async Task<RecipeResponse?> GetByIdAsync(int id) {
+    public async Task<RecipeResponse?> GetByIdAsync(Guid id) {
         Recipe? recipe = await _recipeRepository.GetByIdAsync(id);
         RecipeResponse? response = recipe?.MapToResponse();
         return response;
@@ -31,14 +31,14 @@ public class RecipeService(IRecipeRepository _recipeRepository, ITagsService _ta
         return response;
     }
     
-    public async Task<bool> UpdateAsync(int id, UpdateRecipeRequest request) {
+    public async Task<bool> UpdateAsync(Guid id, UpdateRecipeRequest request) {
         IEnumerable<Tag> tags = await _tagsService.GetAllAsync();
         Recipe recipe = await request.MapToRecipe(id, tags);
         await validator.ValidateAndThrowAsync(recipe);
         return await _recipeRepository.UpdateAsync(recipe);
     }
     
-    public async Task<bool> DeleteByIdAsync(int id) {
+    public async Task<bool> DeleteByIdAsync(Guid id) {
         return await _recipeRepository.DeleteAsync(id);
     }
 }

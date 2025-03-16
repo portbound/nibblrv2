@@ -1,7 +1,8 @@
 namespace Shared.Models;
 
 public class Recipe {
-    public int ID { get; init; }
+    // public int ID { get; init; }
+    public Guid ID { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
     public string? URL { get; set; }

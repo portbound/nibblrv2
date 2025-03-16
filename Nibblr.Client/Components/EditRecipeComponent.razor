@@ -233,7 +233,7 @@
             "can"
         ];
 
-        [Parameter] public int? ID { get; set; }
+        [Parameter] public Guid? ID { get; set; }
         [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
         [Parameter] public EventCallback<string> OnRecipeSet { get; set; }
         [Parameter] public EventCallback<bool> OnToggleIsEditing { get; set; }
@@ -245,11 +245,11 @@
                 _recipe = ExtractedRecipe;
             }
 
-            if (ID > 0) {
+            if (ID != null) {
                 _recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
             }
 
-            if (_recipe.ID > 0) {
+            if (_recipe.ID != null) {
                 await OnRecipeSet.InvokeAsync(_recipe.Name);
             } else {
                 await OnRecipeSet.InvokeAsync("New Recipe");
@@ -305,7 +305,7 @@
         private async Task SaveRecipeAsync() {
             try {
                 HttpResponseMessage response;
-                if (_recipe.ID > 0) {
+                if (_recipe.ID != null) {
                     response = await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
                 } else {
                     response = await Client.PostAsJsonAsync($"api/recipes", _recipe);

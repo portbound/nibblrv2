@@ -3,7 +3,8 @@ using Shared.Models;
 namespace Shared.Contracts.Responses;
 
 public class RecipeResponse {
-    public required int ID { get; set; }
+    // public required int ID { get; set; }
+    public required Guid ID { get; set; }
     public required string Name { get; set; }
     public required string? Description { get; set; }
     public required string? URL { get; set; }

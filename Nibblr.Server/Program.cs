@@ -18,7 +18,13 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddDbContext<NibblrDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<NibblrDbContext>(options => {
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    connectionString = connectionString.Replace("${DB_PASSWORD}", 
+        Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "");
+    options.UseNpgsql(connectionString);
+});
+// builder.Services.AddDbContext<NibblrDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();

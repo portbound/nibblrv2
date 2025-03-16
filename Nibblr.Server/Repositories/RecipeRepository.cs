@@ -12,7 +12,7 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
         return await Task.FromResult(true);
     }
     
-    public async Task<Recipe?> GetByIdAsync(int id) {
+    public async Task<Recipe?> GetByIdAsync(Guid id) {
         return await _dbContext.Recipes
             .Include(r => r.Ingredients)
             .Include(r => r.Instructions)
@@ -55,7 +55,7 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
        return await Task.FromResult(true);
     }
     
-    public async Task<bool> DeleteAsync(int id) {
+    public async Task<bool> DeleteAsync(Guid id) {
         Recipe? recipe = await _dbContext.Recipes.FirstOrDefaultAsync(x => x.ID.ToString() == id.ToString());
         if (recipe == null) {
             return await Task.FromResult(false);

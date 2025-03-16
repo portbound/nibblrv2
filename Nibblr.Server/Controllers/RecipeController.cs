@@ -18,7 +18,7 @@ public class RecipeController(IRecipeService _recipeService) : ControllerBase {
     }
     
     [HttpGet(ApiEndpoints.Recipes.Get)]
-    public async Task<IActionResult> Get(int id) {
+    public async Task<IActionResult> Get(Guid id) {
         RecipeResponse? response = await _recipeService.GetByIdAsync(id);
         return response != null
             ? Ok(response)
@@ -32,7 +32,7 @@ public class RecipeController(IRecipeService _recipeService) : ControllerBase {
     }
     
     [HttpPut(ApiEndpoints.Recipes.Update)]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateRecipeRequest request) {
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRecipeRequest request) {
         bool updated = await _recipeService.UpdateAsync(id, request);
         return !updated
             ? NotFound()
@@ -40,7 +40,7 @@ public class RecipeController(IRecipeService _recipeService) : ControllerBase {
     }
 
     [HttpDelete(ApiEndpoints.Recipes.Delete)]
-    public async Task<IActionResult> Delete(int id) {
+    public async Task<IActionResult> Delete(Guid id) {
         bool deleted = await _recipeService.DeleteByIdAsync(id);
         return !deleted 
             ? NotFound()

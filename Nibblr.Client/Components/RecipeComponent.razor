@@ -182,7 +182,7 @@
     private bool _ingredientsVisible = true;
     private bool _instructionsVisible = true;
 
-    [Parameter] public int? ID { get; set; }
+    [Parameter] public Guid? ID { get; set; }
     [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
     [Parameter] public EventCallback<string> OnRecipeSet { get; set; }
     [Parameter] public EventCallback<bool> OnToggleIsEditing { get; set; }

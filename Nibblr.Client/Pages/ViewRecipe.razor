@@ -1,4 +1,4 @@
-@page "/RecipeView/{id:int}"
+@page "/RecipeView/{id:guid}"
 
 @using Shared.Models
 @inject HttpClient Client
@@ -20,7 +20,7 @@
     private bool IsEditing = false;
     
     [Parameter]
-    public int ID { get; set; }
+    public Guid? ID { get; set; }
 
     protected void RecipeSet(string name) {
         RecipeName = name;

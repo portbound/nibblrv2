@@ -17,6 +17,7 @@ public static class ContractMapping {
             }
         }
         return new Recipe {
+            ID = Guid.NewGuid(),
             Name = request.Name,
             URL = !string.IsNullOrEmpty(request.URL) ? request.URL : string.Empty,
             Description = request.Description,
@@ -83,7 +84,7 @@ public static class ContractMapping {
         };
     }
 
-    public static async Task<Recipe> MapToRecipe(this UpdateRecipeRequest request, int id, IEnumerable<Tag> existingTags) {
+    public static async Task<Recipe> MapToRecipe(this UpdateRecipeRequest request, Guid id, IEnumerable<Tag> existingTags) {
         List<Tag> sortedTags = [];
         foreach (Tag incomingTag in request.Tags) {
             Tag? existingTag = existingTags

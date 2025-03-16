@@ -40,13 +40,13 @@
         IsLoading = true;
         var encodedURI = HttpUtility.UrlEncode(Url);
         ExtractedRecipe = await Client.GetFromJsonAsync<Recipe>($"/api/AI/extract?url={encodedURI}");
-        var response = await Client.PostAsJsonAsync("api/recipes", ExtractedRecipe);
-        var createdRecipe = await response.Content.ReadFromJsonAsync<Recipe>();
+        HttpResponseMessage response = await Client.PostAsJsonAsync("api/recipes", ExtractedRecipe);
+        Recipe? createdRecipe = await response.Content.ReadFromJsonAsync<Recipe>();
         IsLoading = false;
         NavigateToRecipeView(createdRecipe.ID);
     }
     
-    private void NavigateToRecipeView(int id) {
+    private void NavigateToRecipeView(Guid id) {
         Navigation.NavigateTo($"RecipeView/{id}");    
     }
 }

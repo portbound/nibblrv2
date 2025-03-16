@@ -94,10 +94,7 @@ public class OpenAiService {
                           "Quantity": {
                             "type": "number"
                           },
-                          "Weight": {
-                            "type": "number"
-                          },
-                          "WeightUnit": {
+                          "Unit": {
                             "type": "string"
                           },
                           "Description": {
