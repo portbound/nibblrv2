@@ -16,22 +16,26 @@ public static class ContractMapping {
                 sortedTags.Add(existingTag ?? incomingTag);
             }
         }
+        Guid newId = Guid.NewGuid();
         return new Recipe {
-            ID = Guid.NewGuid(),
+            ID = newId,
             Name = request.Name,
             URL = !string.IsNullOrEmpty(request.URL) ? request.URL : string.Empty,
             Description = request.Description,
             Ingredients = request.Ingredients.Select(x => new Ingredients {
+                ID = Guid.NewGuid(),
                 Quantity = x.Quantity,
-                // Weight = x.Weight,
-                // WeightUnit = x.WeightUnit,
                 Unit = x.Unit,
                 Name = x.Name,
-                Notes = x.Notes
+                Notes = x.Notes,
+                RecipeID = newId
             }).ToList(),
             Instructions = request.Instructions.Select(x => new Instructions {
+                ID = Guid.NewGuid(),
                 Step = x.Step,
-                Body = x.Body,
+                Body = x.Body,                
+                RecipeID = newId
+
             }).ToList(),
             Tags = sortedTags.OrderByDescending(x => x.Name).ToList(),
             Servings = request.Servings,

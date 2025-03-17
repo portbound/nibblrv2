@@ -12,7 +12,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
         modelBuilder.Entity<Recipe>(entity =>
         {
             entity.HasKey(e => e.ID);
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            entity.Property(e => e.ID);
 
             entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Description);
@@ -45,7 +45,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
         modelBuilder.Entity<Ingredients>(entity =>
         {
             entity.HasKey(e => e.ID);
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            entity.Property(e => e.ID);
 
             entity.Property(e => e.Quantity).IsRequired();
             // entity.Property(e => e.Weight);
@@ -58,7 +58,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
         modelBuilder.Entity<Instructions>(entity =>
         {
             entity.HasKey(e => e.ID);
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            entity.Property(e => e.ID);
 
             entity.Property(e => e.Step).IsRequired();
             entity.Property(e => e.Body).IsRequired();
@@ -67,7 +67,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
         modelBuilder.Entity<Tag>(entity =>
         {
             entity.HasKey(e => e.ID);
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            entity.Property(e => e.ID);
             
             entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Name).IsRequired();
