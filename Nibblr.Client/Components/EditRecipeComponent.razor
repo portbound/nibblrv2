@@ -174,7 +174,7 @@
                     <MudCollapse Expanded="_instructionsVisible">
                         <MudCardContent>
                             <MudList T="Instructions" Dense="true" ReadOnly="true">
-                                @foreach (Instructions instruction in _recipe.Instructions) {
+                                @foreach (Instructions instruction in _recipe.Instructions.OrderBy(x => x.Step)) {
                                     <MudListItem>
                                         <div class="d-flex mb-2 align-items-center">
                                             <MudAvatar Class="mr-3" 
