@@ -6,7 +6,7 @@
 @rendermode InteractiveWebAssembly
 
 @if (_recipe == null) {
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    <LoaderComponent Message="Loading Recipe..." />
 } else {
     <MudPaper Elevation="0" Outlined="true" Class="pa-4">
         <MudGrid>
@@ -26,6 +26,9 @@
                 <MudText Class="mt-2 mb-4" Typo="Typo.subtitle1">
                     @(!string.IsNullOrEmpty(_recipe.Description) ? _recipe.Description : "No description available.")
                 </MudText>
+                <MudLink Href="@_recipe.URL" Class="mt-2 mb-4" Typo="Typo.subtitle2">
+                    @(!string.IsNullOrEmpty(_recipe.URL) ? "Link to Recipe" : null)
+                </MudLink>
             </MudItem>
 
             <MudItem xs="12" Class="pt-0">
@@ -63,8 +66,8 @@
                         <MudGrid>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Class="d-sm-none"Typo="Typo.h6">@_recipe.Calories</MudText>
-                                    <MudText Class="d-none d-sm-block"Typo="Typo.h5">@_recipe.Calories</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Calories</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Calories</MudText>
                                     <MudText Typo="Typo.caption">Calories</MudText>
                                 </MudPaper>
                             </MudItem>
@@ -157,7 +160,7 @@
                     <MudCollapse Expanded="_instructionsVisible">
                         <MudCardContent>
                         <MudList T="Instructions" Dense="true" ReadOnly="true">
-                            @foreach (Instructions instruction in _recipe.Instructions) {
+                            @foreach (Instructions instruction in _recipe.Instructions.OrderBy(x => x.Step)) {
                                 <MudListItem>
                                     <div class="d-flex">
                                         <MudAvatar Color="Color.Info" Class="mr-3" Size="Size.Medium">@instruction.Step</MudAvatar>
@@ -177,38 +180,26 @@
 }
 
 @code {
-    private Recipe? _recipe = new();
+    private Recipe? _recipe;
     private bool _isEditing = false;
     private bool _ingredientsVisible = true;
     private bool _instructionsVisible = true;
 
     [Parameter] public Guid? ID { get; set; }
-    [Parameter] public Recipe? ExtractedRecipe { get; set; } = null;
     [Parameter] public EventCallback<string> OnRecipeSet { get; set; }
     [Parameter] public EventCallback<bool> OnToggleIsEditing { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        if (ExtractedRecipe != null) {
-            _recipe = ExtractedRecipe;
-        }
-
         if (ID != null) {
             _recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
         }
         
-        if (_recipe.ID != null) {
+        if (_recipe != null) {
             await OnRecipeSet.InvokeAsync(_recipe.Name);
         } else {
             await OnRecipeSet.InvokeAsync("New Recipe");
         }
     }
-
-    // private string FormatQuantity(Ingredients ingredient) {
-    //     if (ingredient.Quantity != null) {
-    //         return $"{ingredient.Quantity} ({ingredient.Weight}{ingredient.WeightUnit})";
-    //     }
-    //     return $"{ingredient.Weight}{ingredient.WeightUnit}";
-    // }
 
     private void AddToShoppingList(Ingredients ingredient) {
         Snackbar.Add($"Added {ingredient.Name} to shopping list", Severity.Success);
@@ -216,7 +207,7 @@
     }
 
     private async Task ToggleBookmark() {
-        _recipe.Bookmarked = !_recipe.Bookmarked;
+        _recipe!.Bookmarked = !_recipe.Bookmarked;
         await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
     }
     
