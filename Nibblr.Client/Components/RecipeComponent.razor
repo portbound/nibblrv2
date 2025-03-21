@@ -26,7 +26,7 @@
                 <MudText Class="mt-2 mb-4" Typo="Typo.subtitle1">
                     @(!string.IsNullOrEmpty(_recipe.Description) ? _recipe.Description : "No description available.")
                 </MudText>
-                <MudLink Href="@_recipe.URL" Class="mt-2 mb-4" Typo="Typo.subtitle2">
+                <MudLink Href="@_recipe.URL" target="_blank" rel="noopener noreferrer" Class="mt-2 mb-4" Typo="Typo.subtitle2">
                     @(!string.IsNullOrEmpty(_recipe.URL) ? "Link to Recipe" : null)
                 </MudLink>
             </MudItem>
