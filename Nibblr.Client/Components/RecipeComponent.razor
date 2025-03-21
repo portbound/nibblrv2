@@ -63,29 +63,29 @@
                         <MudGrid>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Class="d-sm-none"Typo="Typo.h6">@_recipe.Calories</MudText>
-                                    <MudText Class="d-none d-sm-block"Typo="Typo.h5">@_recipe.Calories</MudText>
+                                    <MudText Class="d-sm-none"Typo="Typo.h6">@(_recipe.Calories != null ? _recipe.Calories : "--")</MudText>
+                                    <MudText Class="d-none d-sm-block"Typo="Typo.h5">@(_recipe.Calories != null ? _recipe.Calories : "--")</MudText>
                                     <MudText Typo="Typo.caption">Calories</MudText>
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Fat</MudText>
-                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Fat</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@(_recipe.Fat != null ? _recipe.Fat : "--")</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@(_recipe.Fat != null ? _recipe.Fat : "--")</MudText>
                                     <MudText Typo="Typo.caption">Fats(g)</MudText>
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Carbs</MudText>
-                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Carbs</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@(_recipe.Carbs != null ? _recipe.Carbs : "--")</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@(_recipe.Carbs != null ? _recipe.Carbs : "--")</MudText>
                                     <MudText Typo="Typo.caption">Carbs(g)</MudText>
                                 </MudPaper>
                             </MudItem>
                             <MudItem xs="3">
                                 <MudPaper Elevation="0" Class="d-flex flex-column align-center pa-2">
-                                    <MudText Class="d-sm-none" Typo="Typo.h6">@_recipe.Protein</MudText>
-                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@_recipe.Protein</MudText>
+                                    <MudText Class="d-sm-none" Typo="Typo.h6">@(_recipe.Protein != null ? _recipe.Protein : "--")</MudText>
+                                    <MudText Class="d-none d-sm-block" Typo="Typo.h5">@(_recipe.Protein != null ? _recipe.Protein : "--")</MudText>
                                     <MudText Typo="Typo.caption">Protein(g)</MudText>
                                 </MudPaper>
                             </MudItem>

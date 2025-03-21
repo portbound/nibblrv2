@@ -76,16 +76,16 @@
                     <MudCardContent>
                         <MudGrid Justify="Justify.SpaceEvenly">
                             <MudItem xs="6" sm="3">
-                                <MudTextField T="int" @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
+                                <MudTextField T="int?" @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem xs="6" sm="3">
-                                <MudTextField T="double" @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
+                                <MudTextField T="double?" @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem xs="6" sm="3">
-                                <MudTextField T="double" @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
+                                <MudTextField T="double?" @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem xs="6" sm="3">
-                                <MudTextField T="double" @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
+                                <MudTextField T="double?" @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
                             </MudItem>
                         </MudGrid>
                     </MudCardContent>

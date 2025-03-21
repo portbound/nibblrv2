@@ -20,10 +20,10 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             entity.Property(e => e.URL);
             
             entity.Property(e => e.Servings);
-            entity.Property(e => e.Calories).IsRequired();
-            entity.Property(e => e.Carbs).IsRequired();
-            entity.Property(e => e.Fat).IsRequired();
-            entity.Property(e => e.Protein).IsRequired();
+            entity.Property(e => e.Calories);
+            entity.Property(e => e.Carbs);
+            entity.Property(e => e.Fat);
+            entity.Property(e => e.Protein);
             
             entity.HasMany(e => e.Ingredients)
                 .WithOne()
@@ -48,8 +48,6 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             entity.Property(e => e.ID);
 
             entity.Property(e => e.Quantity).IsRequired();
-            // entity.Property(e => e.Weight);
-            // entity.Property(e => e.WeightUnit);
             entity.Property(e => e.Unit).IsRequired();
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Notes);
