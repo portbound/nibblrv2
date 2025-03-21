@@ -14,6 +14,7 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
     
     public async Task<Recipe?> GetByIdAsync(Guid id) {
         return await _dbContext.Recipes
+            .AsNoTracking()
             .Include(r => r.Ingredients)
             .Include(r => r.Instructions)
             .Include(r => r.Tags)
@@ -22,6 +23,7 @@ public class RecipeRepository(NibblrDbContext _dbContext) : IRecipeRepository {
     
     public async Task<IEnumerable<Recipe>> GetAllAsync() {
         return await _dbContext.Recipes
+            .AsNoTracking()
             .Include(r => r.Ingredients)
             .Include(r => r.Instructions)            
             .Include(r => r.Tags)
