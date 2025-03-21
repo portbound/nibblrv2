@@ -12,232 +12,230 @@
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 } else {
     <MudPaper Elevation="0" Outlined="true" Class="pa-4">
-        <MudGrid>
-            <MudItem xs="12">
-                <div class="d-flex justify-space-between align-center">
-                    <MudTooltip Text="Back">
-                        <MudIconButton Icon="@Icons.Material.Filled.KeyboardBackspace" Color="Color.Error" Class="mr-2" @onclick="ToggleOpenPopover" />
-                    </MudTooltip>
-                    <MudTextField @bind-Value="_recipe.Name" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2" />
-                    <MudTooltip Text="Save Changes">
-                        <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Info" @onclick="SaveRecipeAsync" />
-                    </MudTooltip>
+        <MudForm>
+            <MudGrid>
+                <MudItem xs="12">
+                    <div class="d-flex justify-space-between align-center">
+                        <MudTooltip Text="Back">
+                            <MudIconButton Icon="@Icons.Material.Filled.KeyboardBackspace" Color="Color.Error" Class="mr-2" @onclick="ToggleOpenPopover"/>
+                        </MudTooltip>
+                        <MudTextField @bind-Value="_recipe.Name" Required="true" RequiredError="Name is required" Label="Recipe Name" Variant="Variant.Outlined" Class="mr-2"/>
+                        <MudTooltip Text="Save Changes">
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Info" @onclick="SaveRecipeAsync"/>
+                        </MudTooltip>
 
-                    <MudOverlay @bind-Visible="_openPopover" DarkBackground AutoClose="true" />
-                    <MudPopover Elevation="10" Fixed="false" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.CenterCenter" Open="@_openPopover" Class="pa-4">
+                        <MudOverlay @bind-Visible="_openPopover" DarkBackground AutoClose="true"/>
+                        <MudPopover Elevation="10" Fixed="false" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.CenterCenter" Open="@_openPopover" Class="pa-4">
+                            <MudText Typo="Typo.h5">
+                                Are you sure you want to cancel?
+                            </MudText>
+                            <MudText Typo="Typo.body1" Class="pb-2">
+                                All unsaved content will be lost.
+                            </MudText>
+                            <div class="d-flex flex-row">
+                                <MudButton Class="ml-auto" OnClick="@ToggleOpenPopover">Keep Editing</MudButton>
+                                <MudButton OnClick="@CancelEdit" Color="Color.Secondary">Leave Anyway</MudButton>
+                            </div>
+                        </MudPopover>
+                    </div>
+                    <MudTextField @bind-Value="_recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4"/>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2">Tags</MudText>
+                    <MudPaper Elevation="0" Class="d-flex flex-wrap gap-2 py-2">
+                        @foreach (Tag item in _recipe.Tags) {
+                            <MudChip T="string"
+                                     Color="Color.Tertiary"
+                                     OnClose="() => RemoveTag(item)"
+                                     Size="Size.Small"
+                                     Label="true">@item.Name</MudChip>
+                        }
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <div class="d-flex gap-2">
+                        <MudAutocomplete T="string"
+                                         Label="Add a tag"
+                                         SearchFunc="@AutoComplete"
+                                         MaxItems="null"
+                                         @bind-Value="_tagName"
+                                         Variant="Variant.Outlined"
+                                         Placeholder="Type a tag name"
+                                         Class="flex-grow-1"/>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Medium"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   Class="align-self-center"
+                                   Disabled="@string.IsNullOrWhiteSpace(_tagName)"
+                                   @onclick="() => AddTag(_tagName)">Tag</MudButton>
+                    </div>
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudCard Elevation="0" Outlined="true" Class="mb-4">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudGrid Justify="Justify.SpaceBetween">
+                                    <MudItem xs="3">
+                                        <MudText Typo="Typo.h6">Macros</MudText>
+                                    </MudItem>
+                                    <MudItem xs="4" sm="3">
+                                        <MudTextField T="int" @bind-Value="_recipe.Servings" Required="true" RequiredError="At least 1 serving is required" Label="Servings" Variant="Variant.Outlined"/>
+                                    </MudItem>
+                                </MudGrid>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudGrid Justify="Justify.SpaceEvenly">
+                                <MudItem xs="6" sm="3">
+                                    <MudTextField T="int?" @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
+                                </MudItem>
+                                <MudItem xs="6" sm="3">
+                                    <MudTextField T="double?" @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
+                                </MudItem>
+                                <MudItem xs="6" sm="3">
+                                    <MudTextField T="double?" @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
+                                </MudItem>
+                                <MudItem xs="6" sm="3">
+                                    <MudTextField T="double?" @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudCard Elevation="0" Outlined="true" Class="mb-4 h-100">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Ingredients</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudIconButton Class="p-0" Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
+                                               @onclick="() => _ingredientsVisible = !_ingredientsVisible"/>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCollapse Expanded="_ingredientsVisible">
+                            <MudCardContent>
+                                <MudList T="Ingredients" Dense="true" ReadOnly="true">
+                                    @foreach (Ingredients ingredient in _recipe.Ingredients) {
+                                        <MudListItem >
+                                            <MudStack Row="true">
+                                                <MudTextField @bind-Value="ingredient.Name" Required="true" RequiredError="Ingredient name is required" Variant="Variant.Outlined" Label="Ingredient"/>
+                                                <MudTooltip Text="Remove Ingredient">
+                                                    <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveIngredient(ingredient))"/>
+                                                </MudTooltip>
+                                            </MudStack>
+                                            <MudStack Row="true" Class="flex-grow-1 align-center">
+                                                <div style="width: 40%;">
+                                                    <MudTextField T="double" Required="true" RequiredError="Quantity is required" @bind-Value="ingredient.Quantity" Variant="Variant.Outlined" Label="Quantity" Class="mr-2 mud-width-full"/>
+                                                </div>
+                                                <div style="width: 60%;">
+                                                    <MudSelect @bind-Value="ingredient.Unit" Required="true" RequiredError="Unit is required" Variant="Variant.Outlined" Label="Unit" Placeholder="--" Class="mud-width-full">
+                                                        @foreach (var unit in Units) {
+                                                            <MudSelectItem Value="@(unit)">@unit</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
+                                                </div>
+                                            </MudStack>
+                                            <MudStack Row="true" Class="flex-grow-1 align-center mb-5">
+                                                <MudTextField @bind-Value="ingredient.Notes" Variant="Variant.Outlined" Label="Notes"/>
+                                            </MudStack>
+                                        </MudListItem>
+                                    }
+                                </MudList>
+                                <div class="d-flex justify-center mt-3">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Tertiary"
+                                               Size="Size.Medium"
+                                               StartIcon="@Icons.Material.Filled.Add"
+                                               Class="align-self-center"
+                                               @onclick="AddNewIngredient">Add Ingredient</MudButton>
+                                </div>
+                            </MudCardContent>
+                        </MudCollapse>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudCard Elevation="0" Outlined="true" Class="h-100">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">Instructions</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudTooltip Text="Collapse Container">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
+                                                   @onclick="() => _instructionsVisible = !_instructionsVisible"/>
+                                </MudTooltip>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCollapse Expanded="_instructionsVisible">
+                            <MudCardContent>
+                                <MudList T="Instructions" Dense="true" ReadOnly="true">
+                                    @foreach (Instructions instruction in _recipe.Instructions.OrderBy(x => x.Step)) {
+                                        <MudListItem>
+                                            <div class="d-flex mb-2 align-items-center">
+                                                <MudAvatar Class="mr-3"
+                                                           Color="Color.Info"
+                                                           Size="Size.Medium">@instruction.Step
+                                                </MudAvatar>
+                                                <div class="flex-grow-1">
+                                                    <MudTextField @bind-Value="instruction.Body"
+                                                                  Required="true" 
+                                                                  RequiredError="Step cannot be empty"
+                                                                  Variant="Variant.Outlined"
+                                                                  Lines="2"
+                                                                  Placeholder="Next Step..."
+                                                                  Label="Instruction"/>
+                                                </div>
+                                                <MudTooltip Text="Remove Instruction">
+                                                    <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveInstruction(instruction))"/>
+                                                </MudTooltip>
+                                            </div>
+                                        </MudListItem>
+                                    }
+                                </MudList>
+                                <div class="d-flex justify-center mt-3">
+                                    <MudButton Variant="Variant.Outlined"
+                                               Color="Color.Tertiary"
+                                               Size="Size.Medium"
+                                               StartIcon="@Icons.Material.Filled.Add"
+                                               Class="align-self-center"
+                                               @onclick="AddNewInstruction">Add Step</MudButton>
+                                </div>
+                            </MudCardContent>
+                        </MudCollapse>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+            @if (ID != null) {
+                <div class="d-flex justify-center mt-3">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Error"
+                               Size="Size.Medium"
+                               StartIcon="@Icons.Material.Filled.Delete"
+                               Class="align-self-center"
+                               @onclick="ToggleDeleteRecipePopover">Delete</MudButton>
+
+                    <MudOverlay @bind-Visible="_deleteRecipePopover" DarkBackground AutoClose="true"/>
+                    <MudPopover AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomCenter" Open="@_deleteRecipePopover" Class="pa-4">
                         <MudText Typo="Typo.h5">
-                            Are you sure you want to cancel?
+                            Are you sure you want to delete @_recipe.Name?
                         </MudText>
                         <MudText Typo="Typo.body1" Class="pb-2">
-                            All unsaved content will be lost.
+                            This action cannot be undone.
                         </MudText>
                         <div class="d-flex flex-row">
-                            <MudButton Class="ml-auto" OnClick="@ToggleOpenPopover">Keep Editing</MudButton>
-                            <MudButton OnClick="@CancelEdit" Color="Color.Secondary">Leave Anyway</MudButton>
+                            <MudButton Class="ml-auto" OnClick="@ToggleDeleteRecipePopover">Cancel</MudButton>
+                            <MudButton OnClick="@DeleteRecipeAsync" Color="Color.Secondary">Delete</MudButton>
                         </div>
                     </MudPopover>
                 </div>
-                <MudTextField @bind-Value="_recipe.Description" Label="Description" Variant="Variant.Outlined" Lines="3" Class="mt-2 mb-4"/>
-            </MudItem>
-            
-            <MudItem xs="12">
-                <MudText Typo="Typo.subtitle1" Class="mb-2">Tags</MudText>
-                <MudPaper Elevation="0" Class="d-flex flex-wrap gap-2 py-2">
-                    @foreach (Tag item in _recipe.Tags) {
-                        <MudChip T="string"
-                                 Color="Color.Tertiary"
-                                 OnClose="() => RemoveTag(item)"
-                                 Size="Size.Small"
-                                 Label="true">@item.Name</MudChip>
-                    }
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12">
-                <div class="d-flex gap-2">
-                    <MudAutocomplete T="string"
-                                     Label="Add a tag"
-                                     SearchFunc="@AutoComplete"
-                                     MaxItems="null"
-                                     @bind-Value="_tagName"
-                                     Variant="Variant.Outlined"
-                                     Placeholder="Type a tag name"
-                                     Class="flex-grow-1"
-                    />
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Size="Size.Medium"
-                               StartIcon="@Icons.Material.Filled.Add"
-                               Class="align-self-center"
-                               Disabled="@string.IsNullOrWhiteSpace(_tagName)"
-                               @onclick="() => AddTag(_tagName)">Tag</MudButton>
-                </div>
-            </MudItem>
-            
-            <MudItem xs="12">
-                <MudCard Elevation="0" Outlined="true" Class="mb-4">
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudGrid Justify="Justify.SpaceBetween">
-                                <MudItem xs="3">
-                                    <MudText Typo="Typo.h6">Macros</MudText>
-                                </MudItem>
-                                <MudItem xs="4" sm="3">
-                                    <MudTextField T="int" @bind-Value="_recipe.Servings" Label="Servings" Variant="Variant.Outlined"/>
-                                </MudItem>
-                            </MudGrid>
-                        </CardHeaderContent>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudGrid Justify="Justify.SpaceEvenly">
-                            <MudItem xs="6" sm="3">
-                                <MudTextField T="int?" @bind-Value="_recipe.Calories" Label="Calories" Variant="Variant.Outlined"/>
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTextField T="double?" @bind-Value="_recipe.Fat" Label="Fat (g)" Variant="Variant.Outlined"/>
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTextField T="double?" @bind-Value="_recipe.Carbs" Label="Carbs (g)" Variant="Variant.Outlined"/>
-                            </MudItem>
-                            <MudItem xs="6" sm="3">
-                                <MudTextField T="double?" @bind-Value="_recipe.Protein" Label="Protein (g)" Variant="Variant.Outlined"/>
-                            </MudItem>
-                        </MudGrid>
-                    </MudCardContent>
-                </MudCard>
-            </MudItem>
-
-            <MudItem xs="12" sm="6">
-                <MudCard Elevation="0" Outlined="true" Class="mb-4 h-100">
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h6">Ingredients</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudIconButton Class="p-0" Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
-                                           @onclick="() => _ingredientsVisible = !_ingredientsVisible"/>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    <MudCollapse Expanded="_ingredientsVisible">
-                        <MudCardContent>
-                            <MudList T="Ingredients" Dense="true" ReadOnly="true">
-                                @foreach (Ingredients ingredient in _recipe.Ingredients) {
-                                    <MudListItem >
-                                        <MudStack Row="true" >
-                                            <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Label="Ingredient"/>
-                                            <MudTooltip Text="Remove Ingredient">
-                                                <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveIngredient(ingredient))"/>
-                                            </MudTooltip>
-                                        </MudStack>
-                                        <MudStack Row="true" Class="flex-grow-1 align-center">
-                                            <div style="width: 40%;">
-                                                <MudTextField T="double" @bind-Value="ingredient.Quantity" Variant="Variant.Outlined" Label="Quantity" Class="mr-2 mud-width-full" />
-                                            </div>
-                                            <div style="width: 60%;">
-                                                <MudSelect @bind-Value="ingredient.Unit" Variant="Variant.Outlined" Label="Unit" Placeholder="--" Class="mud-width-full" >
-                                                    @foreach (var unit in Units) {
-                                                        <MudSelectItem Value="@(unit)">@unit</MudSelectItem>
-                                                    }
-                                                </MudSelect>
-                                            </div>
-                                        </MudStack>
-                                        <MudStack Row="true" Class="flex-grow-1 align-center mb-5">
-                                            <MudTextField @bind-Value="ingredient.Notes" Variant="Variant.Outlined" Label="Notes"/>
-                                        </MudStack>
-                                    </MudListItem>
-                                }
-                            </MudList>
-                            <div class="d-flex justify-center mt-3">
-                                <MudButton Variant="Variant.Outlined"
-                                           Color="Color.Tertiary"
-                                           Size="Size.Medium"
-                                           StartIcon="@Icons.Material.Filled.Add"
-                                           Class="align-self-center"
-                                           @onclick="AddNewIngredient">Add Ingredient</MudButton>
-                            </div>
-                        </MudCardContent>
-                    </MudCollapse>
-                </MudCard>
-            </MudItem>
-            <MudItem xs="12" sm="6">
-                <MudCard Elevation="0" Outlined="true" Class="h-100">
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h6">Instructions</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudTooltip Text="Collapse Container">
-                                <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
-                                               @onclick="() => _instructionsVisible = !_instructionsVisible"/>
-                            </MudTooltip>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    <MudCollapse Expanded="_instructionsVisible">
-                        <MudCardContent>
-                            <MudList T="Instructions" Dense="true" ReadOnly="true">
-                                @foreach (Instructions instruction in _recipe.Instructions.OrderBy(x => x.Step)) {
-                                    <MudListItem>
-                                        <div class="d-flex mb-2 align-items-center">
-                                            <MudAvatar Class="mr-3" 
-                                                       Color="Color.Info" 
-                                                       Size="Size.Medium">@instruction.Step
-                                            </MudAvatar>
-                                            <div class="flex-grow-1">
-                                                <MudTextField @bind-Value="instruction.Body" 
-                                                              Variant="Variant.Outlined" 
-                                                              Lines="2" 
-                                                              Placeholder="Next Step..."
-                                                              Label="Instruction"/>
-                                            </div>
-                                            <MudTooltip Text="Remove Instruction">
-                                                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveInstruction(instruction))"/>
-                                            </MudTooltip>
-                                        </div>
-                                    </MudListItem>
-                                }
-                            </MudList>
-                            <div class="d-flex justify-center mt-3">
-                                <MudButton Variant="Variant.Outlined"
-                                           Color="Color.Tertiary"
-                                           Size="Size.Medium"
-                                           StartIcon="@Icons.Material.Filled.Add"
-                                           Class="align-self-center"
-                                           @onclick="AddNewInstruction">Add Step</MudButton>
-                            </div>
-                        </MudCardContent>
-                    </MudCollapse>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-        @if (ID != null) {
-            <div class="d-flex justify-center mt-3">
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Error"
-                           Size="Size.Medium"
-                           StartIcon="@Icons.Material.Filled.Delete"
-                           Class="align-self-center"
-                           @onclick="ToggleDeleteRecipePopover">Delete</MudButton>
-
-                <MudOverlay @bind-Visible="_deleteRecipePopover" DarkBackground AutoClose="true" />
-                <MudPopover AnchorOrigin="Origin.TopCenter" TransformOrigin="Origin.BottomCenter" Open="@_deleteRecipePopover" Class="pa-4">
-                    <MudText Typo="Typo.h5">
-                        Are you sure you want to delete @_recipe.Name?
-                    </MudText>
-                    <MudText Typo="Typo.body1" Class="pb-2">
-                        This action cannot be undone.
-                    </MudText>
-                    <div class="d-flex flex-row">
-                        <MudButton Class="ml-auto" OnClick="@ToggleDeleteRecipePopover">Cancel</MudButton>
-                        <MudButton OnClick="@DeleteRecipeAsync" Color="Color.Secondary">Delete</MudButton>
-                    </div>
-                </MudPopover>
-            </div>
-        }
-
-        
+            }
+        </MudForm>
     </MudPaper>
-    
-        
-    
 
     @code {
         private Recipe? _recipe = new();
@@ -348,24 +346,38 @@
             await OnToggleIsEditing.InvokeAsync();
         }
 
-        private async Task SaveRecipeAsync() {
-            try {
-                HttpResponseMessage response;
-                if (_recipe.ID != null) {
-                    response = await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
-                } else {
-                    response = await Client.PostAsJsonAsync($"api/recipes", _recipe);
-                }
+        private async Task SaveRecipeAsync() {  
+            bool isValidated = true;
 
-                if (response.IsSuccessStatusCode) {
-                    Snackbar.Add("Recipe saved successfully", Severity.Success);
-                    await CancelEdit();
-                } else {
-                    Snackbar.Add("Error saving recipe", Severity.Error);
-                }
+            if (_recipe.Ingredients.Count < 1) {
+                isValidated = false;
+                Snackbar.Add("At least one ingredient is required", Severity.Error);
             }
-            catch (Exception ex) {
-                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+
+            if (_recipe.Instructions.Count < 1) {
+                isValidated = false;
+                Snackbar.Add("At least one instruction is required", Severity.Error);
+            }
+
+            if (isValidated) {
+                try {
+                    HttpResponseMessage response;
+                    if (_recipe.ID != null) {
+                        response = await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
+                    } else {
+                        response = await Client.PostAsJsonAsync($"api/recipes", _recipe);
+                    }
+
+                    if (response.IsSuccessStatusCode) {
+                        Snackbar.Add("Recipe saved successfully", Severity.Success);
+                        await CancelEdit();
+                    } else {
+                        Snackbar.Add("Error saving recipe", Severity.Error);
+                    }
+                }
+                catch (Exception ex) {
+                    Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+                }
             }
         }
 
