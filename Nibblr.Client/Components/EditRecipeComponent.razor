@@ -286,7 +286,7 @@
                 _recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
             }
 
-            if (_recipe.ID != null) {
+            if (_recipe.ID != Guid.Empty) {
                 await OnRecipeSet.InvokeAsync(_recipe.Name);
             } else {
                 await OnRecipeSet.InvokeAsync("New Recipe");
@@ -351,7 +351,7 @@
         private async Task SaveRecipeAsync() {
             try {
                 HttpResponseMessage response;
-                if (_recipe.ID != null) {
+                if (_recipe.ID != Guid.Empty) {
                     response = await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
                 } else {
                     response = await Client.PostAsJsonAsync($"api/recipes", _recipe);

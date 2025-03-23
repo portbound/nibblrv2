@@ -1,12 +1,10 @@
-using Server.Services.Interfaces;
-using Server.Validators;
 using Shared.Contracts.Requests;
 using Shared.Contracts.Responses;
 using Shared.Models;
 
 namespace Server.Mapping;
 
-public static class ContractMapping {
+public static class RecipeMapping {
     public static Recipe MapToRecipe(this CreateRecipeRequest request, IEnumerable<Tag> existingTags = null) {
         List<Tag> sortedTags = [];
         if (existingTags != null) {
@@ -57,8 +55,6 @@ public static class ContractMapping {
                 ID = x.ID,
                 RecipeID = recipe.ID,
                 Quantity = x.Quantity,
-                // Weight = x.Weight,
-                // WeightUnit = x.WeightUnit,
                 Unit = x.Unit,
                 Name = x.Name,
                 Notes = x.Notes
@@ -123,4 +119,6 @@ public static class ContractMapping {
             Bookmarked = request.Bookmarked,
         };
     }
+    
+    
 }
