@@ -8,6 +8,8 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
     public DbSet<Instructions> Instructions => Set<Instructions>();
     public DbSet<Ingredients> Ingredients => Set<Ingredients>();
     public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<Grocery> Groceries => Set<Grocery>();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Recipe>(entity =>
         {
@@ -69,6 +71,15 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             
             entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Name).IsRequired();
+        });
+
+        modelBuilder.Entity<Grocery>(entity =>
+        {
+            entity.HasKey(e => e.ID);
+            entity.Property(e => e.ID);
+
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Category).IsRequired();
         });
     }
 }

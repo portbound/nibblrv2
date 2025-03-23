@@ -19,4 +19,12 @@ public static class ApiEndpoints {
         
         public const string GetAll = Base;
     }
+
+    public static class Groceries {
+        private const string Base = $"{ApiBase}/groceries";
+        
+        public const string Create = Base;
+        public const string GetAll = Base;
+        public const string Delete = $"{Base}/{{id:guid}}";
+    }
 }
