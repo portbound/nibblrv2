@@ -3,6 +3,7 @@ using Movies.Api;
 using Server.Services.Interfaces;
 using Shared.Contracts.Requests;
 using Shared.Contracts.Responses;
+using Shared.Models;
 
 namespace Server.Controllers;
 
@@ -11,10 +12,10 @@ public class RecipeController(IRecipeService _recipeService) : ControllerBase {
 
     [HttpPost(ApiEndpoints.Recipes.Create)]
     public async Task<IActionResult> Create([FromBody] CreateRecipeRequest request) {
-        var created = await _recipeService.CreateAsync(request);
-        return !created.status ? 
-            BadRequest() :
-            Ok(created.recipe);
+        (bool status, Recipe recipe) created = await _recipeService.CreateAsync(request);
+        return !created.status 
+            ? BadRequest() 
+            : Ok(created.recipe);
     }
     
     [HttpGet(ApiEndpoints.Recipes.Get)]

@@ -123,7 +123,7 @@
                                 @foreach (Ingredients ingredient in _recipe.Ingredients) {
                                     <MudListItem >
                                         <MudStack Row="true" >
-                                            <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Label="Ingredient"/>
+                                            <MudTextField @bind-Value="ingredient.Name" Variant="Variant.Outlined" Placeholder="Name" Label="Ingredient"/>
                                             <MudTooltip Text="Remove Ingredient">
                                                 <MudIconButton Class="align-self-center" Icon="@Icons.Material.Filled.Close" Color="Color.Error" @onclick="@(() => RemoveIngredient(ingredient))"/>
                                             </MudTooltip>
@@ -286,7 +286,7 @@
                 _recipe = await Client.GetFromJsonAsync<Recipe>($"api/recipes/{ID}");
             }
 
-            if (_recipe.ID != null) {
+            if (_recipe.ID != Guid.Empty) {
                 await OnRecipeSet.InvokeAsync(_recipe.Name);
             } else {
                 await OnRecipeSet.InvokeAsync("New Recipe");
@@ -308,7 +308,7 @@
 
         private void AddNewIngredient() {
             _recipe.Ingredients.Add(new Ingredients {
-                Name = "New Ingredient",
+                Name = "",
                 Quantity = 1
             });
         }
@@ -351,7 +351,7 @@
         private async Task SaveRecipeAsync() {
             try {
                 HttpResponseMessage response;
-                if (_recipe.ID != null) {
+                if (_recipe.ID != Guid.Empty) {
                     response = await Client.PutAsJsonAsync($"api/recipes/{ID}", _recipe);
                 } else {
                     response = await Client.PostAsJsonAsync($"api/recipes", _recipe);
