@@ -80,6 +80,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
 
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Category).IsRequired();
+            entity.Property(e => e.IsInCart).IsRequired();
         });
     }
 }

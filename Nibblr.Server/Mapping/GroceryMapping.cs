@@ -12,7 +12,8 @@ public static class GroceryMapping {
         return new Grocery {
             ID = newId,
             Name = request.Name,
-            Category = request.Category
+            Category = request.Category,
+            IsInCart = false
         };
     }
 
@@ -20,7 +21,8 @@ public static class GroceryMapping {
         return new GroceryResponse {
             ID = grocery.ID,
             Name = grocery.Name,
-            Category = grocery.Category
+            Category = grocery.Category,
+            IsInCart = grocery.IsInCart
         };
     }
     
