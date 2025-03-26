@@ -1,0 +1,61 @@
+@using Shared.Contracts.Responses
+@using Shared.Models
+@inject HttpClient Client
+
+
+<MudCard Elevation="0" Outlined="true" Class="pa-4 mb-4">
+    <MudCardHeader Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@Type</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudTooltip Text="Collapse">
+                <MudIconButton Icon="@Icons.Material.Filled.Expand" Color="Color.Dark"
+                               @onclick="ToggleExpanded"/>
+            </MudTooltip>
+        </CardHeaderActions>
+    </MudCardHeader>
+    
+    <MudCollapse Expanded="_expanded">
+        <MudCardContent>
+        <MudStack Spacing="2">
+            @foreach (GroceryResponse item in ListItems) {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudCheckBox T="bool" @bind-Checked="item.IsInCart" Color="Color.Primary"/>
+                    <MudTextField T="string" Value="@item.Name" Variant="Variant.Outlined"></MudTextField>
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Error" Size="Size.Small" @onclick="() => RemoveItem(item)"/>
+                </MudStack>
+            }
+        </MudStack>
+
+        <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Outlined" FullWidth="true" Class="mt-2" @onclick="AddItem">
+            Add
+        </MudButton>
+        </MudCardContent>
+    </MudCollapse>
+</MudCard>
+
+@code {
+    private bool _expanded = true;
+    [Parameter] public FoodTypes Type { get; set; }
+    [Parameter] public List<GroceryResponse> ListItems { get; set; }
+
+    private void AddItem() {
+        ListItems.Add(
+            new GroceryResponse {
+                Name = string.Empty,
+                Category = Type,
+                IsInCart = false
+            }
+        );
+    }
+
+    private void RemoveItem(GroceryResponse item) {
+        ListItems.Remove(item);
+    }
+
+    private void ToggleExpanded() {
+        _expanded = !_expanded;
+    }
+    
+}

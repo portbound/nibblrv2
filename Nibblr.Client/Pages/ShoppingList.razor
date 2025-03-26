@@ -1,0 +1,73 @@
+@page "/ShoppingList"
+
+@inject HttpClient Client
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Shared.Contracts.Responses
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveWebAssembly
+@using Shared.Models
+@using Client.Components
+
+@if (IsLoading) {
+    <LoaderComponent Message="Fetching Shopping List..." />
+} else {
+    <MudContainer>
+        <MudText Typo="Typo.h4" Class="mb-4">Shopping List</MudText>
+
+        <ShoppingCategory Type="@FoodTypes.Produce" ListItems="_produceItems"/>
+        <ShoppingCategory Type="@FoodTypes.Protein" ListItems="_proteinItems"/>
+        <ShoppingCategory Type="@FoodTypes.Grocery" ListItems="_groceryItems"/>
+        <ShoppingCategory Type="@FoodTypes.Dairy" ListItems="_dairyItems"/>
+        <ShoppingCategory Type="@FoodTypes.Misc" ListItems="_miscItems"/>
+        
+        <MudButton Color="Color.Success" Variant="Variant.Filled" FullWidth="true" StartIcon="@Icons.Material.Filled.CheckCircle" OnClick="@PushToPantry">
+            Finish Shopping
+        </MudButton>
+    </MudContainer>
+}
+
+@code {
+    private bool IsLoading = true;
+    private List<GroceryResponse> _produceItems = [];
+    private List<GroceryResponse> _proteinItems = [];
+    private List<GroceryResponse> _groceryItems = [];
+    private List<GroceryResponse> _dairyItems = [];
+    private List<GroceryResponse> _miscItems = [];
+    private List<GroceryResponse> _itemsToAdd = [];
+    
+
+    protected override async Task OnInitializedAsync() {
+        var groceries = await Client.GetFromJsonAsync<GroceriesResponse>("/api/groceries/");
+        
+        _produceItems = groceries.Items
+            .Where(x => x.Category == FoodTypes.Produce)
+            .ToList();
+
+        _proteinItems = groceries.Items
+            .Where(x => x.Category == FoodTypes.Protein)
+            .ToList();
+
+        _groceryItems = groceries.Items
+            .Where(x => x.Category == FoodTypes.Grocery)
+            .ToList();
+
+        _dairyItems = groceries.Items
+            .Where(x => x.Category == FoodTypes.Dairy)
+            .ToList();
+
+        _miscItems = groceries.Items
+            .Where(x => x.Category == FoodTypes.Misc)
+            .ToList();
+
+        IsLoading = false;
+    }
+
+    public async Task PushToPantry() {
+        var purchasedProduceItems = _produceItems.Where(x => x.IsInCart);
+        foreach (var item in purchasedProduceItems) {
+            _itemsToAdd.Add(item);
+        }
+        HttpResponseMessage foo = await Client.PostAsJsonAsync("api/pantry", _itemsToAdd);
+    }
+}

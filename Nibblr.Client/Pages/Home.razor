@@ -7,7 +7,7 @@
 @using Shared.Models
 @rendermode InteractiveWebAssembly
 
-@if (_recipes.Count < 1) {
+@if (IsLoading) {
     <LoaderComponent Message="Loading Recipes..."/>
 } else {
     <MudContainer Class="d-none d-sm-flex justify-center">
@@ -72,6 +72,7 @@
 }
 
 @code {
+    private bool IsLoading = true;
     List<RecipeResponse> _recipes = [];
     List<RecipeResponse> _filteredRecipes = [];
     private string _searchString = string.Empty;
@@ -82,6 +83,8 @@
             _recipes = response.Items.OrderByDescending(x => x.Bookmarked).ThenBy(x => x.Name).ToList();
             _filteredRecipes = _recipes;
         }
+
+        IsLoading = false;
     }
 
     private void NavigateToRecipeView(Guid id) {
