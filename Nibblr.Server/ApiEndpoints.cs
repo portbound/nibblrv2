@@ -27,4 +27,13 @@ public static class ApiEndpoints {
         public const string GetAll = Base;
         public const string Delete = $"{Base}/{{id:guid}}";
     }
+    
+    public static class Pantry {
+        private const string Base = $"{ApiBase}/pantry";
+        
+        public const string Create = Base;
+        public const string GetAll = Base;
+        public const string Update = Base;
+        public const string Delete = $"{Base}/{{id:guid}}";
+    }
 }

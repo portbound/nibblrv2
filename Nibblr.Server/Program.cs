@@ -29,11 +29,14 @@ builder.Services.AddDbContext<NibblrDbContext>(options => {
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IGroceryRepository, GroceryRepository>();
+builder.Services.AddScoped<IPantryRepository, PantryRepository>();
 builder.Services.AddScoped<IGroceryService, GroceryService>();
+builder.Services.AddScoped<IPantryService, PantryService>();
 builder.Services.AddScoped<ITagsRepository, TagsRepository>();
 builder.Services.AddScoped<ITagsService, TagsService>();
 builder.Services.AddSingleton<AbstractValidator<Recipe>, RecipeValidator>();
 builder.Services.AddSingleton<AbstractValidator<Grocery>, GroceryValidator>();
+builder.Services.AddSingleton<AbstractValidator<Pantry>, PantryValidator>();
     
 
 builder.Services.AddOpenApi();

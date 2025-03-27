@@ -9,6 +9,7 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
     public DbSet<Ingredients> Ingredients => Set<Ingredients>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<Grocery> Groceries => Set<Grocery>();
+    public DbSet<Pantry> Pantry => Set<Pantry>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<Recipe>(entity =>
@@ -81,6 +82,16 @@ public class NibblrDbContext(DbContextOptions<NibblrDbContext> options) : DbCont
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.Category).IsRequired();
             entity.Property(e => e.IsInCart).IsRequired();
+        });
+
+        modelBuilder.Entity<Pantry>(entity =>
+        {
+            entity.HasKey(e => e.ID);
+            entity.Property(e => e.ID);
+
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Category).IsRequired();
+            entity.Property(e => e.Usage).IsRequired();
         });
     }
 }
