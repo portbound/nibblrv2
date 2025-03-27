@@ -22,6 +22,7 @@ public class GroceryRepository(NibblrDbContext _dbContext) : IGroceryRepository 
         if (grocery == null) {
             return await Task.FromResult(false);
         }
+        _dbContext.Groceries.Remove(grocery);
         await _dbContext.SaveChangesAsync();
         return await Task.FromResult(true);
     }

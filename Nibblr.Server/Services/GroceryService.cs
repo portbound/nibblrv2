@@ -1,9 +1,7 @@
 using FluentValidation;
 using Server.Mapping;
-using Server.Repositories;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
-using Server.Validators;
 using Shared.Contracts.Requests;
 using Shared.Contracts.Responses;
 using Shared.Models;

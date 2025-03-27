@@ -24,7 +24,7 @@ public class GroceryController(IGroceryService _groceryService) : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete(ApiEndpoints.Groceries.GetAll)]
+    [HttpDelete(ApiEndpoints.Groceries.Delete)]
     public async Task<IActionResult> Delete(Guid id) {
         bool deleted = await _groceryService.DeleteByIdAsync(id);
         return deleted

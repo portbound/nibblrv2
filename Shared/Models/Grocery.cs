@@ -6,11 +6,3 @@ public class Grocery {
     public FoodTypes Category { get; set; }
     public bool IsInCart { get; set; } = false;
 }
-
-public enum FoodTypes {
-    Produce,
-    Protein,
-    Grocery,
-    Dairy,
-    Misc
-}
